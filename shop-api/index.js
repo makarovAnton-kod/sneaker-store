@@ -1,16 +1,14 @@
 import express from 'express';
-import productsRouter from "./routers/products";
+import productsRouter from "./routers/products.js";
 import cors from 'cors';
-import categoriesRouter from "./routers/categories";
-import usersRouter from "./routers/users";
+import usersRouter from "./routers/users.js";
 import mongoose from "mongoose";
-import config from "./config";
+import config from "./config.js";
 
 const app = express();
 const port = 8000;
 
 app.use('/products', productsRouter);
-app.use('/categories', categoriesRouter);
 app.use('/users', usersRouter);
 app.use(express.json());
 app.use(cors());

@@ -1,32 +1,19 @@
 import {model, Schema} from 'mongoose';
-import Category from './Category';
 
 const ProductSchema = new Schema(
-  {
-    category: {
-      type: Schema.Types.ObjectId,
-      ref: 'Category',
-      required: true,
-      validate: {
-        validator: async (value) => {
-          const category = await Category.findById(value);
-          return Boolean(category);
+    {
+        title: {
+            type: String,
+            required: true,
         },
-        message: 'Category does not exist!',
-      },
+        price: {
+            type: Number,
+            required: true,
+        },
+        description: String,
+        image: String,
     },
-    title: {
-      type: String,
-      required: true,
-    },
-    price: {
-      type: Number,
-      required: true,
-    },
-    description: String,
-    image: String,
-  },
-  { timestamps: true },
+    {timestamps: true},
 );
 
 const Product = model('Product', ProductSchema);
