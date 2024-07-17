@@ -1,102 +1,101 @@
-import { Router } from 'express';
-import mongoose from 'mongoose';
-import Product from '../models/Product.js';
-import auth from '../middleware/auth.js';
-import {imagesUpload} from '../multer.js';
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const {nanoid} = require('nanoid');
+const config = require('../config');
+const Product = require("../models/Product");
+const auth = require("../middleware/auth");
+const permit = require("../middleware/permit");
 
-const productsRouter = Router();
 
-productsRouter.get('/', async (_req, res, next) => {
-  try {
-    const results = await Product.find();
-    res.send(results);
-  } catch (e) {
-    return next(e);
-  }
-});
+const router = express.Router();
 
-productsRouter.get('/:id', async (req, res, next) => {
-  try {
-    let _id;
-    try {
-      _id = new mongoose.Types.ObjectId(req.params.id);
-    } catch {
-      return res.status(404).send({ error: 'Wrong ObjectId!' });
-    }
-
-    const product = await Product.findById(_id);
-
-    if (!product) {
-      return res.status(404).send({ error: 'Not found!' });
-    }
-
-    res.send(product);
-  } catch (e) {
-    next(e);
-  }
-});
-
-productsRouter.post(
-    '/',
-    // auth,
-    imagesUpload.single('image'),
-    async (req, res, next) => {
-      try {
-        const productData = {
-          title: req.body.title,
-          price: parseFloat(req.body.price),
-          description: req.body.description,
-          image: req.file ? req.file.filename : null,
-        };
-
-        const product = new Product(productData);
-        await product.save();
-
-        res.send(product);
-      } catch (e) {
-        if (e instanceof mongoose.Error.ValidationError) {
-          return res.status(422).send(e);
-        }
-
-        next(e);
-      }
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, config.uploadPath);
     },
-);
+    filename: (req, file, cb) => {
+        cb(null, nanoid() + path.extname(file.originalname));
+    },
+});
+const upload = multer({storage});
 
-productsRouter.patch(
-    '/:id',
-    // auth,
-    imagesUpload.single('image'),
-    async (req, res, next) => {
-      try {
-        let image = undefined;
-        if (req.body.image === 'delete') {
-          image = null;
-        } else if (req.file) {
-          image = req.file.filename;
-        }
-        const result = await Product.updateOne(
-            { _id: req.params.id },
-            {
-              $set: {
-                title: req.body.title,
-                price: parseFloat(req.body.price),
-                description: req.body.description,
-                image,
-              },
-            }
-        );
-        if (result.matchedCount === 0) {
-          return res.status(404).send({ message: 'Not found!' });
-        }
-        res.send({ message: 'ok' });
-      } catch (e) {
-        if (e instanceof mongoose.Error.ValidationError) {
-          return res.status(422).send(e);
-        }
-        next(e);
-      }
+router.get('/', async (req, res) => {
+    const sort = {};
+    const query = {};
+    if (req.query.orderBy === 'price' && req.query.direction === 'desc') {
+        sort.price = -1;
     }
-);
+    if (req.query.filter === 'image') {
+        query.image = {$ne: null};
+    }
+    if (req.query.category) {
+        query.category = req.query.category;
+    }
 
-export default productsRouter;
+    try {
+        const products = await Product
+            .find(query)
+            .sort(sort)
+            .populate('category', 'title description');
+        res.send(products);
+    } catch {
+        res.sendStatus(500);
+    }
+});
+router.get('/:id', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        if (!product) {
+            res.status(404).send({message: 'Product not found!'});
+        }
+        res.send(product);
+    } catch {
+        res.sendStatus(500);
+    }
+});
+router.post('/', auth, permit('admin'), upload.single('image'), async (req, res) => {
+
+        try {
+            const {title, price, category, description} = req.body;
+            const productData = {
+                title,
+                price,
+                category,
+                description: description || null,
+                image: null,
+            };
+            if (req.file) {
+                productData.image = 'uploads/' + req.file.filename;
+            }
+            const product = new Product(productData);
+            await product.save();
+            res.send(product);
+        } catch {
+            res.sendStatus(500);
+        } catch (e) {
+            res.status(400).send(e);
+        }
+    });
+    router.put('/:id', async (req, res) => {
+        const productData = {
+            title: req.body.title,
+            price: req.body.price,
+            description: req.body.description,
+            image: null,
+        };
+        if (req.file) {
+            productData.image = req.file.filename;
+        }
+        try {
+            const product = await Product.findById(req.params.id);
+            if (!product) {
+                res.status(404).send({message: 'Product not found!'});
+            }
+            const updateProduct = await Product
+                .findByIdAndUpdate(req.params.id, productData, {new: true});
+            res.send(updateProduct);
+        } catch {
+            res.sendStatus(500);
+        }
+    });

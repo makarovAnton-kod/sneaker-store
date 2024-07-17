@@ -1,53 +1,58 @@
-import mongoose from 'mongoose';
-import config from './config.js';
-import Product from './models/Product.js';
-import User from './models/User.js';
-
-const dropCollection = async (db, collectionName) => {
-    try {
-        await db.dropCollection(collectionName);
-    } catch (e) {
-        console.log(`Collection ${collectionName} was missing, skipping drop...`);
-    }
-};
+const mongoose = require('mongoose');
+const { nanoid } = require('nanoid');
+const config = require('./config');
+const User = require('./models/User');
+const Category = require('./models/Category');
+const Product = require('./models/Product');
 
 const run = async () => {
-    await mongoose.connect(config.mongoose.db);
-    const db = mongoose.connection;
-
-    const collections = ['categories', 'products', 'users'];
-
-    for (const collectionName of collections) {
-        await dropCollection(db, collectionName);
+    await mongoose.connect(config.mongo.db);
+    const collections = await mongoose.connection.db.listCollections().toArray();
+    for (const coll of collections) {
+        await mongoose.connection.db.dropCollection(coll.name);
     }
 
-    await Product.create(
-        {
-            title: 'Intel Core i7 12700K',
-            price: 350,
-            image: 'fixtures/cpu.jpg',
-        },
-        {
-            title: 'Samsung 990 Pro 1TB',
-            price: 170,
-            image: 'fixtures/ssd.jpg',
-        },
-    );
+    const [cpuCategory, hddCategory] = await Category.create({
+        title: 'CPUs',
+        description: 'Central Processor Units',
+    }, {
+        title: 'HDDs',
+        description: 'Hard Disk Drives',
+    });
+
+    await Product.create({
+        title: "Intel core i7",
+        price: 300,
+        category: cpuCategory._id,
+        image: 'fixtures/cpu.jpg',
+    }, {
+        title: "Seagate BarraCuda 1TB",
+        price: 150,
+        category: hddCategory._id,
+        image: 'fixtures/hdd.jpg',
+    }, {
+        title: "AMD Ryzen 5 3600",
+        price: 200,
+        category: cpuCategory._id,
+        image: 'fixtures/intel.jpg',
+    }, {
+        title: "Western Digital 2TB",
+        price: 180,
+        category: hddCategory._id,
+        image: 'fixtures/ncn.jpg',
+    });
 
     await User.create({
-            email: 'user@shop.local',
-            displayName: 'John Doe',
-            password: '12345',
-            token: crypto.randomUUID(),
-        },
-        {
-            email: 'user2@shop.local',
-            displayName: 'Jane Rome',
-            password: '123',
-            token: crypto.randomUUID(),
-        });
+        username: 'admin',
+        password: 'admin',
+        token: nanoid(),
+    }, {
+        username: 'user',
+        password: 'user',
+        token: nanoid(),
+    });
 
-    await db.close();
+    await mongoose.connection.close();
 };
 
-void run();
+run().catch(console.error);

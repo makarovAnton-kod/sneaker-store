@@ -1,83 +1,42 @@
-import express from 'express';
-import User from '../models/User.js';
-import mongoose from 'mongoose';
-
-const userRouter = express.Router();
-
-userRouter.post('/', async (req, res, next) => {
-    console.log(req.body)
+const express = require('express');
+const User = require('../models/User');
+const axios = require('axios');
+const {nanoid} = require('nanoid');
+const router = express.Router();
+router.post('/', async (req, res) => {
     try {
-        const user = new User({
-            email: req.body.email,
-            displayName: req.body.displayName,
-            password: req.body.password,
-        });
-
+        const {email, password, displayName} = req.body;
+        const userData = {email, password, displayName};
+        const user = new User(userData);
         user.generateToken();
         await user.save();
-        return res.send({ message: 'ok!', user });
-    } catch (error) {
-        if (error instanceof mongoose.Error.ValidationError) {
-            return res.status(422).send(error);
-        }
-
-        next(error);
-    }
-});
-
-userRouter.post('/sessions', async (req, res, next) => {
-    try {
-        const user = await User.findOne({ email: req.body.email });
-
-        if (!user) {
-            return res.status(422).send({ error: 'User not found!' });
-        }
-
-        const isMatch = await user.checkPassword(req.body.password);
-
-        if (!isMatch) {
-            return res.status(422).send({ error: 'Password is wrong!' });
-        }
-
-        user.generateToken();
-        await user.save();
-
-        return res.send({ message: 'Email and password are correct!', user });
+        res.send(user);
     } catch (e) {
-        next(e);
+        res.status(400).send(e);
     }
 });
-
-userRouter.delete('/sessions', async (req, res, next) => {
-    try {
-        const headerValue = req.get('Authorization');
-        const successMessage = { message: 'Success!' };
-
-        if (!headerValue) {
-            return res.send({ ...successMessage, stage: 'No header' });
-        }
-
-        const [_bearer, token] = headerValue.split(' ');
-
-        if (!token) {
-            return res.send({ ...successMessage, stage: 'No token' });
-        }
-
-        const user = await User.findOne({ token });
-
-        if (!user) {
-            return res.send({ ...successMessage, stage: 'No user' });
-        }
-
-        user.generateToken();
-        await user.save();
-
-        return res.send({ ...successMessage, stage: 'Success' });
-    } catch (e) {
-        return next(e);
+router.post('/sessions', async (req, res) => {
+    const user = await User.findOne({email: req.body.email});
+    if (!user) {
+        return res.status(401).send({message: 'Credentials are wrong!'});
     }
+    const isMatch = await user.checkPassword(req.body.password);
+    if (!isMatch) {
+        return res.status(401).send({message: 'Credentials are wrong!'});
+    }
+    user.generateToken();
+    await user.save({validateBeforeSave: false});
+    res.send({message: 'Username and password correct!', user})
 });
 
-
-
-export default userRouter;
+router.delete('/sessions', async (req, res) => {
+    const token = req.get('Authorization');
+    const success = {message: 'Success'};
+    if (!token) return res.send(success);
+    const user = await User.findOne({token});
+    if (!user) return res.send(success);
+    user.generateToken();
+    await user.save({validateBeforeSave: false});
+    return res.send({success, user});
+});
+module.exports = router;
