@@ -4,6 +4,7 @@ import {Typography} from "@mui/material";
 import ProductForm from "../../components/ProductForm/ProductForm";
 import {createProduct} from "../../store/actions/productsActions";
 import {fetchCategories} from "../../store/actions/categoriesActions";
+import {historyPush} from '../../store/actions/historyActions';
 
 const NewProduct = () => {
     const dispatch = useDispatch();
@@ -13,8 +14,9 @@ const NewProduct = () => {
         dispatch(fetchCategories());
     }, [dispatch]);
 
-    const onProductFormSubmit = productData => {
-        dispatch(createProduct(productData));
+    const onProductFormSubmit =async productData => {
+        await dispatch(createProduct(productData));
+        dispatch(historyPush('/'));
     };
     return (
         <>

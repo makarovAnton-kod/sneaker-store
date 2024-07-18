@@ -1,7 +1,5 @@
 import axiosApi from "../../axiosApi";
 import {toast} from "react-toastify";
-import {historyPush} from "./historyActions";
-
 export const FETCH_PRODUCT_REQUEST = 'FETCH_PRODUCT_REQUEST';
 export const FETCH_PRODUCT_SUCCESS = 'FETCH_PRODUCT_SUCCESS';
 export const FETCH_PRODUCT_FAILURE = 'FETCH_PRODUCT_FAILURE';
@@ -20,7 +18,6 @@ const fetchProductsFailure = error => ({type: FETCH_PRODUCTS_FAILURE, payload: e
 const createProductRequest = () => ({type: CREATE_PRODUCT_REQUEST});
 const createProductSuccess = () => ({type: CREATE_PRODUCT_SUCCESS});
 const createProductFailure = error => ({type: CREATE_PRODUCT_FAILURE, payload: error});
-
 export const fetchProduct = id => {
     return async dispatch => {
         try {
@@ -32,41 +29,40 @@ export const fetchProduct = id => {
         }
     }
 };
-export const fetchProducts = (query) => {
-    return async dispatch => {
-        try {
-            dispatch(fetchProductsRequest());
-            const response = await axiosApi('/products' + query);
-            dispatch(fetchProductsSuccess(response.data));
-        } catch (e) {
-            if (e.response.status === 401) {
-                toast.warn('You need login!', {
-                    position: "top-right",
-                    autoClose: 3500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+export const fetchProducts = () => {
+        return async (dispatch, getState) => {
+            try {
+                const headers = {
+                    'Authorization': getState().users.user && getState().users.user.token,
+                };
+                dispatch(fetchProductsRequest());
+                const response = await axiosApi('/products', {headers});
+                dispatch(fetchProductsSuccess(response.data));
+            } catch (e) {
+                if (e.response.status === 401) {
+                    toast.warn('You need login!', {
+                        position: "top-right",
+                        autoClose: 3500,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
+                dispatch(fetchProductsFailure(e.message));
             }
-
-            dispatch(fetchProductsFailure(e.message));
         }
-    }
-};
-export const createProduct = (productData) => {
-    return async dispatch => {
-        try {
-            dispatch(createProductRequest());
-            await axiosApi.post('/products', productData);
-            dispatch(createProductSuccess());
-            dispatch(historyPush('/'));
-
-        } catch (e) {
-            dispatch(createProductFailure(e.response.data));
-
-            throw e;
+    };
+    export const createProduct = (productData) => {
+        return async dispatch => {
+            try {
+                dispatch(createProductRequest());
+                await axiosApi.post('/products', productData);
+                dispatch(createProductSuccess());
+            } catch (e) {
+                dispatch(createProductFailure(e.message));
+                throw e;
+            }
         }
-    }
-};
+    };

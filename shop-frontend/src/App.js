@@ -6,6 +6,9 @@ import NewProduct from "./containers/NewProduct/NewProduct";
 import Register from "./containers/Register/Register";
 import Login from "./containers/Login/Login";
 import {useSelector} from "react-redux";
+import UserProfile from './containers/UserProfile/Profile';
+import Profile from './containers/UserProfile/Profile';
+
 const ProtectedRoute = ({isAllowed, redirectTo, ...props}) => {
     return isAllowed ?
         <Route {...props}/> :
@@ -28,6 +31,8 @@ const App = () => {
             <Route path="/products/:id" component={Product}/>
             <Route path="/register" component={Register}/>
             <Route path="/login" component={Login}/>
+            <Route path="/profile" component={Profile}/>
+
         </Switch>
     </Layout>
 );

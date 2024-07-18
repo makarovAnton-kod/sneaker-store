@@ -11,8 +11,8 @@ const AppDrawer = () => {
     const dispatch = useDispatch();
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const categories = useSelector(state => state.categories.categories);
-    useEffect(() => {
-        dispatch(fetchCategories());
+    useEffect(async () => {
+       await dispatch(fetchCategories());
     }, [dispatch]);
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);

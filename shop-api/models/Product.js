@@ -20,7 +20,6 @@ const ProductSchema = new Schema({
     },
     image: String
 });
-ProductSchema.plugin(idValidator, {message : 'Bad ID value for {PATH}'});
 
 const Product = mongoose.model('Product', ProductSchema);
 module.exports = Product;

@@ -21,7 +21,7 @@ const useStyles = makeStyles()(theme => ({
     },
 }));
 const AppToolbar = () => {
-    const { classes } = useStyles();
+    const { classes } = useStyles(null);
     const user = useSelector(state => state.users.user);
 
     return (

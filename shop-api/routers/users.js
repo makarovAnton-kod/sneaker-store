@@ -10,7 +10,7 @@ router.post('/', async (req, res) => {
         const user = new User(userData);
         user.generateToken();
         await user.save();
-        res.send(user);
+        res.send({message: 'User was created!', user});
     } catch (e) {
         res.status(400).send(e);
     }
@@ -28,7 +28,28 @@ router.post('/sessions', async (req, res) => {
     await user.save({validateBeforeSave: false});
     res.send({message: 'Username and password correct!', user})
 });
+router.put('/:id', async (req, res) => {
+    const userId = req.params.id;
+    const { displayName } = req.body;
 
+    try {
+        let user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        // Обновляем только displayName
+        user.displayName = displayName;
+
+        // Сохраняем изменения без валидации и без изменения токена
+        await user.save({ validateBeforeSave: false });
+
+        res.send({ message: 'User updated successfully', user });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+});
 router.delete('/sessions', async (req, res) => {
     const token = req.get('Authorization');
     const success = {message: 'Success'};

@@ -71,8 +71,6 @@ router.post('/', auth, permit('admin'), upload.single('image'), async (req, res)
             const product = new Product(productData);
             await product.save();
             res.send(product);
-        } catch {
-            res.sendStatus(500);
         } catch (e) {
             res.status(400).send(e);
         }
@@ -99,3 +97,4 @@ router.post('/', auth, permit('admin'), upload.single('image'), async (req, res)
             res.sendStatus(500);
         }
     });
+module.exports = router;

@@ -5,11 +5,14 @@ import productsReducer from "./reducers/productsReducer";
 import usersReducer, {initialState} from "./reducers/usersReducer";
 import axiosApi from "../axiosApi";
 import categoriesReducer from "./reducers/categoriesReducer";
+import ordersReducer from './reducers/ordersReducer';
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const rootReducer = combineReducers({
     products: productsReducer,
     users: usersReducer,
     categories: categoriesReducer,
+    orders: ordersReducer,
+
 });
 const persistedState = loadFromLocalStorage();
 const store = createStore(
@@ -22,7 +25,8 @@ store.subscribe(() => {
         users: {
             ...initialState,
             user: store.getState().users.user,
-        }    })
+        }
+    })
 });
 axiosApi.interceptors.request.use(config => {
     try {

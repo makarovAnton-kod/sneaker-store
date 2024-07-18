@@ -15,7 +15,8 @@ const run = async () => {
     const [cpuCategory, hddCategory] = await Category.create({
         title: 'CPUs',
         description: 'Central Processor Units',
-    }, {
+    },
+        {
         title: 'HDDs',
         description: 'Hard Disk Drives',
     });
@@ -34,22 +35,29 @@ const run = async () => {
         title: "AMD Ryzen 5 3600",
         price: 200,
         category: cpuCategory._id,
-        image: 'fixtures/intel.jpg',
+        image: 'fixtures/intel.jpeg',
     }, {
         title: "Western Digital 2TB",
         price: 180,
         category: hddCategory._id,
-        image: 'fixtures/ncn.jpg',
+        image: 'fixtures/ncn.jpeg',
     });
 
     await User.create({
-        username: 'admin',
+        email: 'admin@gmail.com',
         password: 'admin',
         token: nanoid(),
+        role: 'admin',
+
+        displayName: 'Admin'
+
     }, {
-        username: 'user',
+        email: 'user@gmail.com',
         password: 'user',
         token: nanoid(),
+        role: 'user',
+        displayName: 'User'
+
     });
 
     await mongoose.connection.close();

@@ -1,11 +1,14 @@
 import {useState} from "react";
 import * as React from 'react';
 import {useDispatch} from "react-redux";
+import {Avatar} from "@mui/material";
 
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import {logoutUser} from "../../../../store/actions/usersActions";
+import history from '../../../../history';
+import {historyReplace} from '../../../../store/actions/historyActions';
 
 const UserMenu = ({user}) => {
     const dispatch = useDispatch();
@@ -28,6 +31,14 @@ const UserMenu = ({user}) => {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
+                {
+                    user.avatar &&
+                    <Avatar
+                        alt={user.displayName}
+                        src={user.avatar}
+                        sx={{ width: 24, height: 24, marginRight: "5px" }}
+                    />
+                }
                 Hello, {user.displayName}!
             </Button>
             <Menu
@@ -39,8 +50,7 @@ const UserMenu = ({user}) => {
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={() => dispatch(historyReplace('/profile'))}>Profile</MenuItem>
                 <MenuItem onClick={() => dispatch(logoutUser())}>Logout</MenuItem>
             </Menu>
         </div>
