@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
-import { Alert, Avatar, Container, Grid, Link, Typography } from "@mui/material";
-import { LockOutlined } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { clearRegisterErrors, registerUser } from "../../store/actions/usersActions";
+import React, {useEffect, useState} from 'react';
+import {Link as RouterLink} from 'react-router-dom';
+import {Alert, Avatar, Container, Grid, Link, Typography} from "@mui/material";
+import {LockOutlined} from "@mui/icons-material";
+import {useDispatch, useSelector} from "react-redux";
+import {clearRegisterErrors, registerUser} from "../../store/actions/usersActions";
 import FormElement from "../../components/UI/Form/FormElement/FormElement";
 import ButtonWithProgress from "../../components/UI/ButtonWithProgress/ButtonWithProgress";
 
 const Register = () => {
-    const history = useHistory();
     const dispatch = useDispatch();
     const error = useSelector(state => state.users.registerError);
     const loading = useSelector(state => state.users.registerLoading);

@@ -1,5 +1,5 @@
+import * as React from "react";
 import {useState} from "react";
-import * as React from 'react';
 import {useDispatch} from "react-redux";
 import {Avatar} from "@mui/material";
 
@@ -7,7 +7,6 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import {logoutUser} from "../../../../store/actions/usersActions";
-import history from '../../../../history';
 import {historyReplace} from '../../../../store/actions/historyActions';
 
 const UserMenu = ({user}) => {

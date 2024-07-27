@@ -6,7 +6,6 @@ import NewProduct from "./containers/NewProduct/NewProduct";
 import Register from "./containers/Register/Register";
 import Login from "./containers/Login/Login";
 import {useSelector} from "react-redux";
-import UserProfile from './containers/UserProfile/Profile';
 import Profile from './containers/UserProfile/Profile';
 
 const ProtectedRoute = ({isAllowed, redirectTo, ...props}) => {

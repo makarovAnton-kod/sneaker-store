@@ -1,7 +1,5 @@
 const express = require('express');
 const User = require('../models/User');
-const axios = require('axios');
-const {nanoid} = require('nanoid');
 const router = express.Router();
 router.post('/', async (req, res) => {
     try {
