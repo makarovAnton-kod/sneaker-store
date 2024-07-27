@@ -39,17 +39,6 @@ export const fetchProducts = () => {
                 const response = await axiosApi('/products', {headers});
                 dispatch(fetchProductsSuccess(response.data));
             } catch (e) {
-                if (e.response.status === 401) {
-                    toast.warn('You need login!', {
-                        position: "top-right",
-                        autoClose: 3500,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                }
                 dispatch(fetchProductsFailure(e.message));
             }
         }

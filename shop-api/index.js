@@ -6,6 +6,7 @@ const products = require('./routers/products');
 const categories = require('./routers/categories');
 const users = require('./routers/users');
 const orders = require('./routers/orders');
+const seedData = require('./fixtures');
 require('dotenv').config();
 
 
@@ -22,6 +23,7 @@ app.use('/orders', orders);
 
 const run = async () => {
     await mongoose.connect(config.mongo.db, config.mongo.options);
+    await seedData();
     app.listen(port, () => {
         console.log(`Server started on ${port} port!`);
     });
