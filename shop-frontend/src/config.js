@@ -1,1 +1,1 @@
-export const apiUrl = 'https://shop-iota-snowy.vercel.app';
+export const apiUrl = 'httpsL//shop-theta-green.vercel.app';
