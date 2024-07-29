@@ -7,7 +7,7 @@ const categories = require('./routers/categories');
 const users = require('./routers/users');
 const orders = require('./routers/orders');
 const seedData = require('./fixtures');
-const {join} = require("node:path"); // Импорт функции по умолчанию
+const { join } = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -20,6 +20,16 @@ app.use('/categories', categories);
 app.use('/users', users);
 app.use('/products', products);
 app.use('/orders', orders);
+
+// Обработка favicon.ico
+app.get('/favicon.ico', (req, res) => {
+    res.sendFile(join(__dirname, 'public', 'favicon.ico'));
+});
+
+// Обработка корневого маршрута
+app.get('/', (req, res) => {
+    res.send('Добро пожаловать в магазин!');
+});
 
 const run = async () => {
     try {
