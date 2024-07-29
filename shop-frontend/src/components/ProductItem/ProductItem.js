@@ -14,7 +14,7 @@ const ProductItem = ({id, title, price, image}) => {
             cardImage = apiUrl + '/' + image;
         }
     }
-
+    console.log(cardImage)
     return (
         <Grid item xs={12} sm={6} lg={3}>
             <Card sx={{height: '100%'}}>
