@@ -5,6 +5,11 @@ import { fetchProduct } from "../../store/actions/productsActions";
 import { apiUrl } from '../../config';
 import { createOrder } from "../../store/actions/ordersActions";
 import { historyReplace } from '../../store/actions/historyActions';
+import imageNotAvailable from "../../assets/image-not-available.jpg";
+import intel from "../../assets/intel.jpeg";
+import cpu from "../../assets/cpu.jpg";
+import hdd from "../../assets/hdd.jpg";
+import ncn from "../../assets/ncn.jpeg";
 
 const Product = ({ match }) => {
     const dispatch = useDispatch();
@@ -25,10 +30,19 @@ const Product = ({ match }) => {
         dispatch(historyReplace('/'));
     };
 
-    let imageUrl;
-
-    if (product) {
-        imageUrl = apiUrl + '/' + product.image;
+    let imageUrl = imageNotAvailable;
+    if (product?.image) {
+        if (product?.image.includes('intel')) {
+            imageUrl = intel;
+        } else if (product?.image.includes('cpu')) {
+            imageUrl = cpu;
+        } else if (product?.image.includes('hdd')) {
+            imageUrl = hdd;
+        }else if (product?.image.includes('ncn')) {
+            imageUrl = ncn;
+        } else {
+            imageUrl = apiUrl + '/' + product?.image;
+        }
     }
 
     return (
