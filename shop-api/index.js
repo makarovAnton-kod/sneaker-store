@@ -12,7 +12,7 @@ require('dotenv').config();
 const app = express();
 const port = 8000;
 
-app.use(express.static('public'));
+app.use('/uploads', express.static('public/uploads'));
 app.use(express.json());
 app.use(cors());
 app.use('/categories', categories);
