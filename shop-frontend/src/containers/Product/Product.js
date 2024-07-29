@@ -10,7 +10,6 @@ const Product = ({ match }) => {
     const dispatch = useDispatch();
     const product = useSelector(state => state.products.product);
     const userId = useSelector(state => state.users.user._id);
-
     useEffect(() => {
         dispatch(fetchProduct(match.params.id));
     }, [dispatch, match.params.id]);
