@@ -1,22 +1,19 @@
 const mongoose = require('mongoose');
 const { nanoid } = require('nanoid');
-const config = require('./config');
 const User = require('./models/User');
 const Category = require('./models/Category');
 const Product = require('./models/Product');
 
 const run = async () => {
     try {
-        await mongoose.connect(config.mongo.db);
-        console.log('MongoDB connected');
 
-        // Drop all collections
+        // Очистка всех коллекций
         const collections = await mongoose.connection.db.listCollections().toArray();
         for (const coll of collections) {
             await mongoose.connection.db.dropCollection(coll.name);
         }
 
-        // Create categories
+        // Создание категорий
         const [cpuCategory, hddCategory] = await Category.create([
             {
                 title: 'CPUs',
@@ -28,7 +25,7 @@ const run = async () => {
             }
         ]);
 
-        // Create products
+        // Создание продуктов
         await Product.create([
             {
                 title: "Intel core i7",
@@ -56,7 +53,7 @@ const run = async () => {
             }
         ]);
 
-        // Create users
+        // Создание пользователей
         await User.create([
             {
                 email: 'admin@gmail.com',
@@ -77,10 +74,8 @@ const run = async () => {
         console.log('Data seeded successfully');
     } catch (error) {
         console.error('Error seeding data:', error);
-    } finally {
-        await mongoose.connection.close();
-        console.log('MongoDB disconnected');
     }
 };
 
+// Экспортируем функцию по умолчанию
 module.exports = run;

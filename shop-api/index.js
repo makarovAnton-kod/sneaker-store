@@ -6,10 +6,9 @@ const products = require('./routers/products');
 const categories = require('./routers/categories');
 const users = require('./routers/users');
 const orders = require('./routers/orders');
-const seedData = require('./fixtures');
+const seedData = require('./fixtures'); // Импорт функции по умолчанию
 require('dotenv').config();
 
-const config = require('./config');
 const app = express();
 const port = 8000;
 
@@ -23,18 +22,15 @@ app.use('/orders', orders);
 
 const run = async () => {
     try {
-        await mongoose.connect(config.mongo.db, config.mongo.options);
+        await mongoose.connect(process.env.MONGODB_URL);
+        console.log('MongoDB connected');
+
         await seedData();
+        console.log('Data seeded successfully');
 
         app.listen(port, () => {
             console.log(`Сервер запущен на порту ${port}!`);
         });
-
-        exitHook(async () => {
-            await mongoose.disconnect();
-            console.log('MongoDB отключен');
-        });
-
     } catch (error) {
         console.error('Ошибка при инициализации:', error);
         process.exit(1); // Завершить процесс с кодом ошибки
@@ -42,5 +38,10 @@ const run = async () => {
 };
 
 run();
+
+exitHook(async () => {
+    await mongoose.disconnect();
+    console.log('MongoDB отключен');
+});
 
 module.exports = app;
