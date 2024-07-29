@@ -6,13 +6,14 @@ const products = require('./routers/products');
 const categories = require('./routers/categories');
 const users = require('./routers/users');
 const orders = require('./routers/orders');
-const seedData = require('./fixtures'); // Импорт функции по умолчанию
+const seedData = require('./fixtures');
+const {join} = require("node:path"); // Импорт функции по умолчанию
 require('dotenv').config();
 
 const app = express();
 const port = 8000;
 
-app.use(express.static('public'));
+app.use('/images', express.static(join(__dirname, 'public/images')));
 app.use(express.json());
 app.use(cors());
 app.use('/categories', categories);
