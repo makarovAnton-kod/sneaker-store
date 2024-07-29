@@ -14,7 +14,11 @@ const port = 8000;
 
 app.use(express.static('public'));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'https://shop-frontend-michail.vercel.app/',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use('/categories', categories);
 app.use('/users', users);
 app.use('/products', products);
@@ -37,7 +41,7 @@ const run = async () => {
     }
 };
 
-run();
+run().then();
 
 exitHook(async () => {
     await mongoose.disconnect();

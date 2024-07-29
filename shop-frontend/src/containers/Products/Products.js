@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {Box, Button, Grid, Typography} from "@mui/material";
 import {fetchProducts} from "../../store/actions/productsActions";
@@ -10,13 +10,10 @@ const Products = () => {
     const products = useSelector(state => state.products.products);
     const user = useSelector(state => state.users.user);
 
-
     useEffect(() => {
         dispatch(fetchProducts());
     }, [dispatch]);
-    if (!user) {
-        return <Redirect to="/login"/>
-    }
+
     return (
         <Grid container direction="column" spacing={2}>
             <Grid item container justifyContent="space-between" alignItems="center">
@@ -25,7 +22,7 @@ const Products = () => {
                         Products
                     </Typography>
                 </Grid>
-                {user.role === 'admin' && <Grid item>
+                {user && user.role === 'admin' && <Grid item>
                     <Button color="primary" component={Link} to="/products/new">
                         Add
                     </Button>
