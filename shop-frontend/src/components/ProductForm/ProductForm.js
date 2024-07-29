@@ -12,14 +12,9 @@ const ProductForm = ({onSubmit, categories, error}) => {
         category: "",
         image: "",
     });
-    const submitFormHandler = e => {
+    const submitFormHandler = async e => {
         e.preventDefault();
-        onSubmit({...state});
-        const formData = new FormData();
-        Object.keys(state).forEach(key => {
-            formData.append(key, state[key]);
-        });
-        onSubmit(formData);
+        await onSubmit({...state});
     };
     const inputChangeHandler = e => {
         const {name, value} = e.target;

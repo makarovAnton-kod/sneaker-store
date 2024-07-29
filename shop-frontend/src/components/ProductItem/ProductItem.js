@@ -7,9 +7,12 @@ import imageNotAvailable from '../../assets/image-not-available.jpg';
 import {apiUrl} from "../../config";
 const ProductItem = ({id, title, price, image}) => {
     let cardImage = imageNotAvailable;
-
     if (image) {
-        cardImage = apiUrl + '/' + image;
+        if (!image.includes('images')) {
+            cardImage = apiUrl+ '/images/' + image;
+        } else {
+            cardImage = apiUrl + '/' + image;
+        }
     }
 
     return (

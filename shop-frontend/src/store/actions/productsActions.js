@@ -1,5 +1,5 @@
 import axiosApi from "../../axiosApi";
-import {toast} from "react-toastify";
+
 export const FETCH_PRODUCT_REQUEST = 'FETCH_PRODUCT_REQUEST';
 export const FETCH_PRODUCT_SUCCESS = 'FETCH_PRODUCT_SUCCESS';
 export const FETCH_PRODUCT_FAILURE = 'FETCH_PRODUCT_FAILURE';
@@ -43,15 +43,24 @@ export const fetchProducts = () => {
             }
         }
     };
-    export const createProduct = (productData) => {
-        return async dispatch => {
-            try {
-                dispatch(createProductRequest());
-                await axiosApi.post('/products', productData);
-                dispatch(createProductSuccess());
-            } catch (e) {
-                dispatch(createProductFailure(e.message));
-                throw e;
+export const createProduct = (productData) => {
+    return async dispatch => {
+        try {
+            dispatch(createProductRequest());
+            // Создание объекта FormData
+            const formData = new FormData();
+
+            // Добавление данных в FormData
+            for (const key in productData) {
+                if (productData.hasOwnProperty(key)) {
+                    formData.append(key, productData[key]);
+                }
             }
+            await axiosApi.post('/products', formData);
+        dispatch(createProductSuccess());
+        } catch (e) {
+            dispatch(createProductFailure(e.message));
+            throw e;
         }
     };
+};
