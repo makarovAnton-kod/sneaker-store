@@ -47,9 +47,9 @@ const Login = () => {
         const {name, value} = e.target;
         setUser(prev => ({...prev, [name]: value}));
     };
-    const submitFormHandler = e => {
+    const submitFormHandler = async e => {
         e.preventDefault();
-        dispatch(loginUser({...user}));
+        await dispatch(loginUser({...user}));
     };
     return (
         <Container maxWidth="xs">

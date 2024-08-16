@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Box, Button, Grid, Typography} from "@mui/material";
 import {fetchProducts} from "../../store/actions/productsActions";
 import ProductItem from "../../components/ProductItem/ProductItem";
+
 const Products = () => {
     const dispatch = useDispatch();
     const loading = useSelector(state => state.products.fetchLoading);
@@ -22,11 +23,16 @@ const Products = () => {
                         Products
                     </Typography>
                 </Grid>
-                {user && user.role === 'admin' && <Grid item>
-                    <Button color="primary" component={Link} to="/products/new">
-                        Add
-                    </Button>
-                </Grid>}
+                {user && user.role === 'admin' && (
+                    <Grid item>
+                        <Button color="primary" component={Link} to="/products/new">
+                            Add Product
+                        </Button>
+                        <Button color="secondary" component={Link} to="/categories">
+                            Manage Categories
+                        </Button>
+                    </Grid>
+                )}
             </Grid>
             {loading
                 ? <Box sx={{textAlign: 'center'}}>Loading ...</Box>

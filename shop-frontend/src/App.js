@@ -7,6 +7,10 @@ import Register from "./containers/Register/Register";
 import Login from "./containers/Login/Login";
 import {useSelector} from "react-redux";
 import Profile from './containers/UserProfile/Profile';
+import EditProduct from "./containers/Product/EditProduct";
+import EditCategory from "./containers/Categories/EditCategory";
+import NewCategory from "./containers/Categories/NewCategory";
+import Categories from "./containers/Categories/Catedories";
 
 const ProtectedRoute = ({isAllowed, redirectTo, ...props}) => {
     return isAllowed ?
@@ -28,9 +32,13 @@ const App = () => {
                 component={NewProduct}
             />
             <Route path="/products/:id" component={Product}/>
+            <Route exact path="/edit/:id" component={EditProduct} />
             <Route path="/register" component={Register}/>
             <Route path="/login" component={Login}/>
             <Route path="/profile" component={Profile}/>
+            <Route path="/categories" exact component={Categories} />
+            <Route path="/categories/new" component={NewCategory} />
+            <Route path="/categories/edit/:id" component={EditCategory} />
 
         </Switch>
     </Layout>

@@ -48,7 +48,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Создание нового продукта
-router.post( '/',
+router.post('/',
     auth,
     permit('admin', 'editor'),
     imagesUpload.single('image'),
@@ -77,25 +77,48 @@ router.post( '/',
 );
 
 // Обновление продукта по ID
-router.put('/:id', auth, permit('admin'), imagesUpload.single('image'), async (req, res) => {
-    try {
-        const { title, price, description } = req.body;
-        const productData = {
-            title,
-            price,
-            description,
-            image: req.file ?  + req.file.filename : null
-        };
+router.put('/:id',
+    auth,
+    permit('admin'),
+    imagesUpload.single('image'),
+    async (req, res) => {
+        try {
+            const { title, price, description } = req.body;
+            const productData = {
+                title,
+                price,
+                description,
+            };
 
+            if (req.file) {
+                productData.image = req.file.filename;
+            }
+
+            const product = await Product.findById(req.params.id);
+            if (!product) {
+                return res.status(404).send({ message: 'Product not found!' });
+            }
+
+            const updatedProduct = await Product.findByIdAndUpdate(req.params.id, productData, { new: true });
+            res.send(updatedProduct);
+        } catch (e) {
+            console.error('Error updating product:', e);
+            res.sendStatus(500);
+        }
+    }
+);
+
+// Удаление продукта
+router.delete('/:id', auth, permit('admin'), async (req, res) => {
+    try {
         const product = await Product.findById(req.params.id);
         if (!product) {
-            return res.status(404).send({ message: 'Product not found!' });
+            return res.status(404).send({error: 'Product not found'});
         }
 
-        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, productData, { new: true });
-        res.send(updatedProduct);
+        await product.deleteOne();
+        res.send({message: 'Product deleted successfully'});
     } catch (e) {
-        console.error('Error updating product:', e);
         res.sendStatus(500);
     }
 });

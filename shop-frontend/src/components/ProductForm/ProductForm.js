@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
-import {Button, Grid} from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import { Button, Grid } from "@mui/material";
 import FileInput from "../UI/Form/FileInput/FileInput";
 import FormElement from "../UI/Form/FormElement/FormElement";
 import FormSelect from "../UI/Form/FormSelect/FormSelect";
 
-const ProductForm = ({onSubmit, categories, error}) => {
+const ProductForm = ({ onSubmit, categories, error, initialData }) => {
     const [state, setState] = useState({
         title: "",
         price: "",
@@ -12,21 +12,31 @@ const ProductForm = ({onSubmit, categories, error}) => {
         category: "",
         image: "",
     });
+
+    useEffect(() => {
+        if (initialData) {
+            setState(initialData);
+        }
+    }, [initialData]);
+
     const submitFormHandler = async e => {
         e.preventDefault();
-        await onSubmit({...state});
+        await onSubmit({ ...state });
     };
+
     const inputChangeHandler = e => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setState(prevState => {
-            return {...prevState, [name]: value};
+            return { ...prevState, [name]: value };
         });
     };
+
     const fileChangeHandler = e => {
         const name = e.target.name;
         const file = e.target.files[0];
-        setState(prevState => ({...prevState, [name]: file}));
+        setState(prevState => ({ ...prevState, [name]: file }));
     };
+
     const getFieldError = fieldName => {
         try {
             return error.errors[fieldName].message;
@@ -34,11 +44,9 @@ const ProductForm = ({onSubmit, categories, error}) => {
             return undefined;
         }
     };
+
     return (
-        <form
-            autoComplete="off"
-            onSubmit={submitFormHandler}
-        >
+        <form autoComplete="off" onSubmit={submitFormHandler}>
             <Grid
                 container
                 maxWidth="md"
@@ -66,7 +74,7 @@ const ProductForm = ({onSubmit, categories, error}) => {
                     type="number"
                     label="Price"
                     onChange={inputChangeHandler}
-                    value={state.price}
+                    value={state.price ? String(state.price) : ""}
                     name="price"
                     error={getFieldError('price')}
                 />
@@ -85,7 +93,7 @@ const ProductForm = ({onSubmit, categories, error}) => {
                     />
                 </Grid>
                 <Grid item>
-                    <Button type="submit" color="primary" variant="contained">Create</Button>
+                    <Button type="submit" color="primary" variant="contained">Save Changes</Button>
                 </Grid>
             </Grid>
         </form>
