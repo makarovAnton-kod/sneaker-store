@@ -16,9 +16,9 @@ import { apiUrl } from '../../config';
 import { createOrder } from "../../store/actions/ordersActions";
 import { historyReplace } from '../../store/actions/historyActions';
 import imageNotAvailable from "../../assets/image-not-available.jpg";
-import intel from "../../assets/intel.jpeg";
-import cpu from "../../assets/cpu.jpg";
-import hdd from "../../assets/hdd.jpg";
+import intel from "../../assets/intel.jpg";
+import cpu from "../../assets/cpu.png";
+import hdd from "../../assets/hdd.jpeg";
 import ncn from "../../assets/ncn.jpeg";
 
 const Product = ({ match }) => {
@@ -56,30 +56,19 @@ const Product = ({ match }) => {
     };
 
     let imageUrl = imageNotAvailable;
-    if (product.image) {
-        if (product.image.startsWith('images/')) {
-            imageUrl = `${apiUrl}/${product.image}`;
+    if (product && product.image) {
+        if (product.image.includes('intel')) {
+            imageUrl = intel;
+        } else if (product.image.includes('cpu')) {
+            imageUrl = cpu;
+        } else if (product.image.includes('hdd')) {
+            imageUrl = hdd;
+        } else if (product.image.includes('ncn')) {
+            imageUrl = ncn;
         } else {
-            switch (product.image) {
-                case 'intel.jpeg':
-                    imageUrl = intel;
-                    break;
-                case 'cpu.jpg':
-                    imageUrl = cpu;
-                    break;
-                case 'hdd.jpg':
-                    imageUrl = hdd;
-                    break;
-                case 'ncn.jpeg':
-                    imageUrl = ncn;
-                    break;
-                default:
-                    imageUrl = `/assets/${product.image}`;
-                    break;
-            }
+            imageUrl = apiUrl + '/' + product.image;
         }
     }
-
     return (
         product &&
         <Paper elevation={4} square sx={{ padding: "20px", maxWidth: '800px', margin: '20px auto' }}>

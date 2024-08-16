@@ -27,7 +27,7 @@ const run = async () => {
 
         // Создание продуктов
         await Product.create([
-            { title: "Intel core i7", price: 300, category: cpuCategory._id, image: 'images/cpu.jpg' },
+            { title: "Intel core i7", price: 300, category: cpuCategory._id, image: 'images/intel.jpg' },
             { title: "Seagate BarraCuda 1TB", price: 150, category: hddCategory._id, image: 'images/hdd.jpg' },
             { title: "AMD Ryzen 5 3600", price: 200, category: cpuCategory._id, image: 'images/intel.jpeg' },
             { title: "Western Digital 2TB", price: 180, category: hddCategory._id, image: 'images/ncn.jpeg' }

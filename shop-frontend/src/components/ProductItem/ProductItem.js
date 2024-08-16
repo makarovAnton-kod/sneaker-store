@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import {
     Button,
     Card,
@@ -12,15 +12,15 @@ import {
     IconButton,
     Typography
 } from "@mui/material";
-import { ArrowForward, Delete, Edit } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
+import {ArrowForward, Delete, Edit} from "@mui/icons-material";
+import {useDispatch, useSelector} from "react-redux";
 import imageNotAvailable from '../../assets/image-not-available.jpg';
-import intel from '../../assets/intel.jpeg';
-import cpu from '../../assets/cpu.jpg';
-import hdd from '../../assets/hdd.jpg';
-import ncn from '../../assets/ncn.jpeg';
-import { apiUrl } from "../../config";
-import { deleteProduct } from "../../store/actions/productsActions";
+import intel from "../../assets/intel.jpg";
+import cpu from "../../assets/cpu.png";
+import hdd from "../../assets/hdd.jpeg";
+import ncn from "../../assets/ncn.jpeg";
+import {deleteProduct} from "../../store/actions/productsActions";
+import {apiUrl} from "../../config";
 
 const ProductItem = ({ id, title, price, image }) => {
     const dispatch = useDispatch();
@@ -28,26 +28,16 @@ const ProductItem = ({ id, title, price, image }) => {
 
     let cardImage = imageNotAvailable;
     if (image) {
-        if (image.includes('images')) {
-            cardImage = `${apiUrl}/${image}`;
+        if (image.includes('intel')) {
+            cardImage = intel;
+        } else if (image.includes('cpu')) {
+            cardImage = cpu;
+        } else if (image.includes('hdd')) {
+            cardImage = hdd;
+        } else if (image.includes('ncn')) {
+            cardImage = ncn;
         } else {
-            switch (image) {
-                case 'intel.jpeg':
-                    cardImage = intel;
-                    break;
-                case 'cpu.jpg':
-                    cardImage = cpu;
-                    break;
-                case 'hdd.jpg':
-                    cardImage = hdd;
-                    break;
-                case 'ncn.jpeg':
-                    cardImage = ncn;
-                    break;
-                default:
-                    cardImage = `/assets/${image}`;
-                    break;
-            }
+            cardImage = apiUrl + '/' + image;
         }
     }
 
@@ -58,7 +48,7 @@ const ProductItem = ({ id, title, price, image }) => {
     };
 
     return (
-        <Grid item xs={12} sm={6} lg={3}>
+        <Grid item xs={12} sm={8} lg={4}>
             <Card sx={{
                 height: '100%',
                 display: 'flex',
@@ -110,7 +100,16 @@ const ProductItem = ({ id, title, price, image }) => {
                         Подробнее
                     </IconButton>
                     {user && user.role === 'admin' && (
-                        <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
+                        <div style={{
+                            display: 'flex',
+                            gap: '8px',
+                            marginLeft: 'auto' ,
+                            '@media (max-width: 800px)': {
+                                display: 'block', // На маленьких экранах вертикально
+                                alignItems: 'center', // Центрируем кнопки
+                                width: '100%', // Занимаем всю ширину
+                            }
+                        }}>
                             <Button
                                 component={Link}
                                 to={'/edit/' + id}
