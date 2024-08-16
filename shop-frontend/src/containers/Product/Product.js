@@ -77,7 +77,7 @@ const Product = ({ match }) => {
                 <img src={imageUrl} alt={product.title} style={{ width: '70%', maxWidth: '600px', borderRadius: '8px' }} />
             </Box>
             <Typography variant="h6" sx={{ textAlign: 'right', marginBottom: '20px', fontWeight: 'bold' }}>
-                {product.price} KGS
+                {product.price} руб.
             </Typography>
             <Typography variant="body1" paragraph>{product.description}</Typography>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>

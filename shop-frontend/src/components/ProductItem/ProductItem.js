@@ -48,7 +48,7 @@ const ProductItem = ({ id, title, price, image }) => {
     };
 
     return (
-        <Grid item xs={12} sm={8} lg={4}>
+        <Grid item xs={12} sm={6} lg={4}>
             <Card sx={{
                 height: '100%',
                 display: 'flex',
@@ -100,24 +100,31 @@ const ProductItem = ({ id, title, price, image }) => {
                         Подробнее
                     </IconButton>
                     {user && user.role === 'admin' && (
-                        <div style={{
-                            display: 'flex',
-                            gap: '8px',
-                            marginLeft: 'auto' ,
-                            '@media (max-width: 800px)': {
-                                display: 'block', // На маленьких экранах вертикально
-                                alignItems: 'center', // Центрируем кнопки
-                                width: '100%', // Занимаем всю ширину
-                            }
-                        }}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '8px',
+                                marginLeft: 'auto',
+                                flexDirection: 'row',
+                                flexWrap: 'wrap',
+                                '@media (max-width: 600px)': {
+                                    flexDirection: 'column', // Вертикально на маленьких экранах
+                                    alignItems: 'center', // Центрируем кнопки
+                                    width: '100%', // Занимаем всю ширину
+                                },
+                            }}
+                        >
                             <Button
                                 component={Link}
                                 to={'/edit/' + id}
                                 variant="contained"
                                 color="info"
-                                startIcon={<Edit />}
+                                size="small" // Уменьшаем размер кнопки
+                                startIcon={<Edit/>}
                                 sx={{
                                     textTransform: 'none',
+                                    padding: '4px 8px', // Уменьшаем отступы внутри кнопки
+                                    fontSize: '0.75rem', // Уменьшаем размер шрифта
                                     '&:hover': {
                                         backgroundColor: 'info.dark',
                                     }
@@ -128,10 +135,13 @@ const ProductItem = ({ id, title, price, image }) => {
                             <Button
                                 variant="contained"
                                 color="error"
-                                startIcon={<Delete />}
+                                size="small" // Уменьшаем размер кнопки
+                                startIcon={<Delete/>}
                                 onClick={handleDelete}
                                 sx={{
                                     textTransform: 'none',
+                                    padding: '4px 8px', // Уменьшаем отступы внутри кнопки
+                                    fontSize: '0.75rem', // Уменьшаем размер шрифта
                                     '&:hover': {
                                         backgroundColor: 'error.dark',
                                     }
