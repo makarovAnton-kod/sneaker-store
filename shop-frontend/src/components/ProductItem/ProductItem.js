@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
     Button,
     Card,
@@ -12,11 +12,15 @@ import {
     IconButton,
     Typography
 } from "@mui/material";
-import {ArrowForward, Delete, Edit} from "@mui/icons-material";
-import {useDispatch, useSelector} from "react-redux";
+import { ArrowForward, Delete, Edit } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
 import imageNotAvailable from '../../assets/image-not-available.jpg';
-import {apiUrl} from "../../config";
-import {deleteProduct} from "../../store/actions/productsActions";
+import intel from '../../assets/intel.jpeg';
+import cpu from '../../assets/cpu.jpg';
+import hdd from '../../assets/hdd.jpg';
+import ncn from '../../assets/ncn.jpeg';
+import { apiUrl } from "../../config";
+import { deleteProduct } from "../../store/actions/productsActions";
 
 const ProductItem = ({ id, title, price, image }) => {
     const dispatch = useDispatch();
@@ -24,10 +28,26 @@ const ProductItem = ({ id, title, price, image }) => {
 
     let cardImage = imageNotAvailable;
     if (image) {
-         if (image.includes('images')) {
-            cardImage = apiUrl + '/' + image;
+        if (image.includes('images')) {
+            cardImage = `${apiUrl}/${image}`;
         } else {
-            cardImage = apiUrl + '/images/' + image;
+            switch (image) {
+                case 'intel.jpeg':
+                    cardImage = intel;
+                    break;
+                case 'cpu.jpg':
+                    cardImage = cpu;
+                    break;
+                case 'hdd.jpg':
+                    cardImage = hdd;
+                    break;
+                case 'ncn.jpeg':
+                    cardImage = ncn;
+                    break;
+                default:
+                    cardImage = `/assets/${image}`;
+                    break;
+            }
         }
     }
 
@@ -93,9 +113,7 @@ const ProductItem = ({ id, title, price, image }) => {
                         <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
                             <Button
                                 component={Link}
-                                to={{
-                                    pathname: '/edit/'+id,
-                                }}
+                                to={'/edit/' + id}
                                 variant="contained"
                                 color="info"
                                 startIcon={<Edit />}

@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from "react-redux";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import {
     Box,
     Button,
@@ -11,11 +11,15 @@ import {
     Paper,
     Typography
 } from "@mui/material";
-import {fetchProduct} from "../../store/actions/productsActions";
-import {apiUrl} from '../../config';
-import {createOrder} from "../../store/actions/ordersActions";
-import {historyReplace} from '../../store/actions/historyActions';
+import { fetchProduct } from "../../store/actions/productsActions";
+import { apiUrl } from '../../config';
+import { createOrder } from "../../store/actions/ordersActions";
+import { historyReplace } from '../../store/actions/historyActions';
 import imageNotAvailable from "../../assets/image-not-available.jpg";
+import intel from "../../assets/intel.jpeg";
+import cpu from "../../assets/cpu.jpg";
+import hdd from "../../assets/hdd.jpg";
+import ncn from "../../assets/ncn.jpeg";
 
 const Product = ({ match }) => {
     const dispatch = useDispatch();
@@ -53,10 +57,26 @@ const Product = ({ match }) => {
 
     let imageUrl = imageNotAvailable;
     if (product.image) {
-        if (product.image.includes('images')) {
-            imageUrl = apiUrl + '/' + product.image;
+        if (product.image.startsWith('images/')) {
+            imageUrl = `${apiUrl}/${product.image}`;
         } else {
-            imageUrl = apiUrl + '/images/' + product.image;
+            switch (product.image) {
+                case 'intel.jpeg':
+                    imageUrl = intel;
+                    break;
+                case 'cpu.jpg':
+                    imageUrl = cpu;
+                    break;
+                case 'hdd.jpg':
+                    imageUrl = hdd;
+                    break;
+                case 'ncn.jpeg':
+                    imageUrl = ncn;
+                    break;
+                default:
+                    imageUrl = `/assets/${product.image}`;
+                    break;
+            }
         }
     }
 
