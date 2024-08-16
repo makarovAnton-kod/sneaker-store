@@ -1,1 +1,1 @@
-export const apiUrl = 'shop-api-michail.vercel.app';
+export const apiUrl = 'https://shop-api-michail.vercel.app';
