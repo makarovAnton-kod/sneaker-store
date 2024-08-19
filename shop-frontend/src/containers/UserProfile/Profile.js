@@ -1,41 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { fetchOrders } from "../../store/actions/ordersActions";
-import { fetchUser, updateUser } from "../../store/actions/usersActions";
-import { TextField, Button, Container, Paper, Typography, List, ListItem, ListItemText } from '@mui/material';
-
-// Функция для группировки заказов
-const groupOrders = (orders) => {
-    const groupedOrders = {};
-
-    orders.forEach(order => {
-        const productId = order.productId._id;
-        if (!groupedOrders[productId]) {
-            groupedOrders[productId] = {
-                title: order.productId.title,
-                price: order.productId.price,
-                totalQuantity: 0,
-                totalPrice: 0,
-            };
-        }
-        groupedOrders[productId].totalQuantity++;
-        groupedOrders[productId].totalPrice += order.productId.price;
-    });
-
-    const groupedOrdersArray = Object.values(groupedOrders).map(order => ({
-        title: order.title,
-        price: order.price,
-        totalQuantity: order.totalQuantity,
-        totalPrice: order.totalPrice,
-    }));
-
-    return groupedOrdersArray;
-};
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import {deleteOrder, fetchOrders} from "../../store/actions/ordersActions";
+import {updateUser} from "../../store/actions/usersActions";
+import {
+    Button,
+    Container,
+    IconButton,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+    Typography
+} from '@mui/material';
+import {Delete, Edit} from '@mui/icons-material';
+import EditOrderDialog from './../Order/EditOrder/EditOrderDialog';
 
 const Profile = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.users.user);
     const orders = useSelector(state => state.orders.orders);
+    const [editOrder, setEditOrder] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [userData, setUserData] = useState({
         displayName: '',
@@ -48,10 +36,20 @@ const Profile = () => {
                 displayName: user.displayName,
                 email: user.email,
             });
+            if (user.role === 'admin') {
+                dispatch(fetchOrders());
+            }
             dispatch(fetchOrders(user._id));
-            dispatch(fetchUser(user._id));
         }
     }, [dispatch, user]);
+
+    const handleEditOrder = (order) => {
+        setEditOrder(order);
+    };
+
+    const handleDeleteOrder = async (orderId) => {
+        await dispatch(deleteOrder(orderId));
+    };
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -59,51 +57,29 @@ const Profile = () => {
     };
 
     const handleSave = async () => {
-        if (user && user._id) {
-            const orderData = {
-                userId: user._id,
-                userData
-            };
-            await dispatch(updateUser(orderData));
-            setEditMode(false);
-        }
+        await dispatch(updateUser(user._id, userData));
+        setEditMode(false);
     };
 
-    // Функция для отображения сгруппированных заказов
-    const renderGroupedOrders = (groupedOrders) => {
-        return (
-            <List sx={{ backgroundColor: '#333333', borderRadius: '10px', padding: '10px' }}>
-                {groupedOrders.map(order => (
-                    <ListItem key={order.title} sx={{ padding: '10px', borderBottom: '1px solid #444444' }}>
-                        <ListItemText
-                            primary={`Товар: ${order.title}`}
-                            secondary={`Цена: ${order.price} KGS - Количество: ${order.totalQuantity} - Сумма: ${order.totalPrice} KGS`}
-                            primaryTypographyProps={{ sx: { color: '#FFD700', fontWeight: 'bold' } }} // Золотой цвет текста для основного текста
-                            secondaryTypographyProps={{ sx: { color: '#FFFFFF' } }} // Белый цвет текста для второстепенного текста
-                        />
-                    </ListItem>
-                ))}
-            </List>
-        );
-    };
-
-    if (!user) {
-        return <Typography variant="h6">Пользователь не авторизован.</Typography>;
-    }
+    const adminOrders = orders.filter(order => order.userId._id !== user._id);
+    const personalOrders = orders.filter(order => order.userId._id === user._id);
 
     return (
-        <Container maxWidth="md">
-            <Paper
-                elevation={3}
-                sx={{
-                    backgroundColor: '#2c2c2c', // Темный фон
-                    padding: 3,
-                    marginTop: 3,
-                    color: '#FFFFFF', // Белый цвет текста
-                    boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.5)',
-                }}
-            >
-                <Typography variant="h4" gutterBottom sx={{ color: '#FFD700' }}>Мой профиль</Typography>
+        <Container maxWidth="lg">
+            <Paper elevation={3} sx={{
+                padding: 3,
+                marginTop: 3,
+                backgroundColor: '#1b1b1b', // Темный фон
+                color: '#f4f4f4', // Светлый текст
+                fontFamily: 'Press Start 2P, cursive', // Пиксельный шрифт
+                boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.5)', // Тень
+            }}>
+                <Typography variant="h4" gutterBottom sx={{
+                    color: '#f39c12', // Яркий акцент
+                    textShadow: '2px 2px #000000', // Тень текста
+                }}>
+                    Мои данные
+                </Typography>
                 {editMode ? (
                     <form noValidate autoComplete="off">
                         <TextField
@@ -115,9 +91,9 @@ const Profile = () => {
                             margin="normal"
                             variant="outlined"
                             sx={{
-                                input: { color: '#FFFFFF' },
-                                label: { color: '#FFD700' }, // Золотой цвет лейбла
-                                fieldset: { borderColor: '#FFD700' } // Золотая рамка
+                                input: { color: '#f39c12', backgroundColor: '#333333' }, // Яркий текст и темный фон input
+                                label: { color: '#f39c12' }, // Яркий цвет лейбла
+                                fieldset: { borderColor: '#f39c12' } // Яркая рамка
                             }}
                         />
                         <TextField
@@ -130,9 +106,9 @@ const Profile = () => {
                             margin="normal"
                             variant="outlined"
                             sx={{
-                                input: { color: '#FFFFFF' },
-                                label: { color: '#FFD700' }, // Золотой цвет лейбла
-                                fieldset: { borderColor: '#FFD700' } // Золотая рамка
+                                input: { color: '#f39c12', backgroundColor: '#333333' }, // Яркий текст и темный фон input
+                                label: { color: '#f39c12' }, // Яркий цвет лейбла
+                                fieldset: { borderColor: '#f39c12' } // Яркая рамка
                             }}
                         />
                         <Button
@@ -140,11 +116,13 @@ const Profile = () => {
                             onClick={handleSave}
                             sx={{
                                 marginRight: 1,
-                                backgroundColor: '#1e90ff',
-                                color: '#FFFFFF',
+                                marginTop: 2,
+                                backgroundColor: '#3498db', // Яркий синий фон кнопки
+                                color: '#ffffff', // Белый текст
                                 '&:hover': {
-                                    backgroundColor: '#1c86ee',
-                                }
+                                    backgroundColor: '#2980b9', // Темный синий при наведении
+                                },
+                                fontFamily: 'Press Start 2P, cursive', // Пиксельный шрифт
                             }}
                         >
                             Сохранить
@@ -153,11 +131,13 @@ const Profile = () => {
                             variant="contained"
                             onClick={() => setEditMode(false)}
                             sx={{
-                                backgroundColor: '#dc143c',
-                                color: '#FFFFFF',
+                                marginTop: 2,
+                                backgroundColor: '#e74c3c', // Красный фон кнопки
+                                color: '#ffffff', // Белый текст
                                 '&:hover': {
-                                    backgroundColor: '#c11b22',
-                                }
+                                    backgroundColor: '#c0392b', // Темный красный при наведении
+                                },
+                                fontFamily: 'Press Start 2P, cursive', // Пиксельный шрифт
                             }}
                         >
                             Отмена
@@ -172,35 +152,131 @@ const Profile = () => {
                             onClick={() => setEditMode(true)}
                             sx={{
                                 marginTop: 2,
-                                backgroundColor: '#1e90ff',
-                                color: '#FFFFFF',
+                                backgroundColor: '#3498db', // Яркий синий фон кнопки
+                                color: '#ffffff', // Белый текст
                                 '&:hover': {
-                                    backgroundColor: '#1c86ee',
-                                }
+                                    backgroundColor: '#2980b9', // Темный синий при наведении
+                                },
+                                fontFamily: 'Press Start 2P, cursive', // Пиксельный шрифт
                             }}
                         >
-                            Редактировать
+                            Редактировать данные
                         </Button>
                     </div>
                 )}
             </Paper>
-            <Paper
-                elevation={3}
-                sx={{
-                    backgroundColor: '#2c2c2c', // Темный фон
+
+            {user.role === 'admin' && (
+                <Paper elevation={3} sx={{
                     padding: 3,
                     marginTop: 3,
-                    color: '#FFFFFF', // Белый цвет текста
+                    backgroundColor: '#1b1b1b',
+                    color: '#f4f4f4',
+                    fontFamily: 'Press Start 2P, cursive',
                     boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.5)',
-                }}
-            >
-                <Typography variant="h5" gutterBottom sx={{ color: '#FFD700' }}>Мои заказы</Typography>
-                {orders && orders.length > 0 ? (
-                    renderGroupedOrders(groupOrders(orders))
+                }}>
+                    <Typography variant="h4" gutterBottom sx={{
+                        color: '#f39c12',
+                        textShadow: '2px 2px #000000',
+                    }}>
+                        Все заказы пользователей
+                    </Typography>
+                    {adminOrders.length > 0 ? (
+                        <TableContainer component={Paper} sx={{ backgroundColor: '#333333' }}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell sx={{ color: '#f39c12' }}>Пользователь</TableCell>
+                                        <TableCell sx={{ color: '#f39c12' }}>Товар</TableCell>
+                                        <TableCell sx={{ color: '#f39c12' }}>Количество</TableCell>
+                                        <TableCell sx={{ color: '#f39c12' }}>Общая сумма</TableCell>
+                                        <TableCell sx={{ color: '#f39c12' }}>Действия</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {adminOrders.map(order => (
+                                        <TableRow key={order._id}>
+                                            <TableCell sx={{ color: '#ffffff' }}>{order.userId.displayName}</TableCell>
+                                            <TableCell sx={{ color: '#ffffff' }}>{order.productId.title}</TableCell>
+                                            <TableCell sx={{ color: '#ffffff' }}>{order.quantity}</TableCell>
+                                            <TableCell sx={{ color: '#ffffff' }}>{order.totalPrice} KGS</TableCell>
+                                            <TableCell>
+                                                <IconButton onClick={() => handleEditOrder(order)} color="primary">
+                                                    <Edit />
+                                                </IconButton>
+                                                <IconButton onClick={() => handleDeleteOrder(order._id)} color="secondary">
+                                                    <Delete />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    ) : (
+                        <Typography variant="body1" sx={{ color: '#f4f4f4' }}>Заказы не найдены.</Typography>
+                    )}
+                </Paper>
+            )}
+
+            <Paper elevation={3} sx={{
+                padding: 3,
+                marginTop: 3,
+                backgroundColor: '#1b1b1b',
+                color: '#f4f4f4',
+                fontFamily: 'Press Start 2P, cursive',
+                boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.5)',
+            }}>
+                <Typography variant="h4" gutterBottom sx={{
+                    color: '#f39c12',
+                    textShadow: '2px 2px #000000',
+                }}>
+                    Мои заказы
+                </Typography>
+                {personalOrders.length > 0 ? (
+                    <TableContainer component={Paper} sx={{ backgroundColor: '#333333' }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ color: '#f39c12' }}>Товар</TableCell>
+                                    <TableCell sx={{ color: '#f39c12' }}>Количество</TableCell>
+                                    <TableCell sx={{ color: '#f39c12' }}>Общая сумма</TableCell>
+                                    {user.role === 'admin' && <TableCell sx={{ color: '#f39c12' }}>Действия</TableCell>}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {personalOrders.map(order => (
+                                    <TableRow key={order._id}>
+                                        <TableCell sx={{ color: '#ffffff' }}>{order.productId.title}</TableCell>
+                                        <TableCell sx={{ color: '#ffffff' }}>{order.quantity}</TableCell>
+                                        <TableCell sx={{ color: '#ffffff' }}>{order.totalPrice} KGS</TableCell>
+                                        {user.role === 'admin' && (
+                                            <TableCell>
+                                                <IconButton onClick={() => handleEditOrder(order)} color="primary">
+                                                    <Edit />
+                                                </IconButton>
+                                                <IconButton onClick={() => handleDeleteOrder(order._id)} color="secondary">
+                                                    <Delete />
+                                                </IconButton>
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 ) : (
-                    <Typography variant="body1">У вас нет заказов.</Typography>
+                    <Typography variant="body1" sx={{ color: '#f4f4f4' }}>У вас нет заказов.</Typography>
                 )}
             </Paper>
+
+            {editOrder && (
+                <EditOrderDialog
+                    open={!!editOrder}
+                    onClose={() => setEditOrder(null)}
+                    order={editOrder}
+                />
+            )}
         </Container>
     );
 };
