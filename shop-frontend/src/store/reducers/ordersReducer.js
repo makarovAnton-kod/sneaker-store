@@ -5,6 +5,9 @@ import {
     FETCH_ORDERS_REQUEST,
     FETCH_ORDERS_SUCCESS,
     FETCH_ORDERS_FAILURE,
+    FETCH_USER_ORDERS_REQUEST,
+    FETCH_USER_ORDERS_SUCCESS,
+    FETCH_USER_ORDERS_FAILURE,
     UPDATE_ORDER_REQUEST,
     UPDATE_ORDER_SUCCESS,
     UPDATE_ORDER_FAILURE,
@@ -14,7 +17,8 @@ import {
 } from "../actions/ordersActions";
 
 const initialState = {
-    orders: [],
+    orders: [], // Все заказы (для админа)
+    userOrders: [], // Заказы текущего пользователя
     order: null,
     orderLoading: false,
     orderError: null,
@@ -42,6 +46,13 @@ const ordersReducer = (state = initialState, action) => {
         case FETCH_ORDERS_FAILURE:
             return { ...state, fetchLoading: false, fetchError: action.payload };
 
+        case FETCH_USER_ORDERS_REQUEST:
+            return { ...state, fetchLoading: true };
+        case FETCH_USER_ORDERS_SUCCESS:
+            return { ...state, fetchLoading: false, userOrders: action.payload };
+        case FETCH_USER_ORDERS_FAILURE:
+            return { ...state, fetchLoading: false, fetchError: action.payload };
+
         case UPDATE_ORDER_REQUEST:
             return { ...state, updateLoading: true };
         case UPDATE_ORDER_SUCCESS:
@@ -55,7 +66,8 @@ const ordersReducer = (state = initialState, action) => {
             return {
                 ...state,
                 deleteLoading: false,
-                orders: state.orders.filter(order => order._id !== action.payload)
+                orders: state.orders.filter(order => order._id !== action.payload),
+                userOrders: state.userOrders.filter(order => order._id !== action.payload)
             };
         case DELETE_ORDER_FAILURE:
             return { ...state, deleteLoading: false, deleteError: action.payload };

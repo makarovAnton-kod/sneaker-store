@@ -1,6 +1,9 @@
 import axiosApi from "../../axiosApi";
 import { addNotification } from './notifierActions';
 
+export const FETCH_USER_ORDERS_REQUEST = 'FETCH_USER_ORDERS_REQUEST';
+export const FETCH_USER_ORDERS_SUCCESS = 'FETCH_USER_ORDERS_SUCCESS';
+export const FETCH_USER_ORDERS_FAILURE = 'FETCH_USER_ORDERS_FAILURE';
 export const CREATE_ORDER_REQUEST = 'CREATE_ORDER_REQUEST';
 export const CREATE_ORDER_SUCCESS = 'CREATE_ORDER_SUCCESS';
 export const CREATE_ORDER_FAILURE = 'CREATE_ORDER_FAILURE';
@@ -18,6 +21,24 @@ export const DELETE_ORDER_FAILURE = 'DELETE_ORDER_FAILURE';
 const createOrderRequest = () => ({ type: CREATE_ORDER_REQUEST });
 const createOrderSuccess = order => ({ type: CREATE_ORDER_SUCCESS, payload: order });
 const createOrderFailure = error => ({ type: CREATE_ORDER_FAILURE, payload: error });
+
+const fetchUserOrdersRequest = () => ({ type: FETCH_USER_ORDERS_REQUEST });
+const fetchUserOrdersSuccess = orders => ({ type: FETCH_USER_ORDERS_SUCCESS, payload: orders });
+const fetchUserOrdersFailure = error => ({ type: FETCH_USER_ORDERS_FAILURE, payload: error });
+
+// Экшен для получения заказов конкретного пользователя
+export const fetchUserOrders = (userId) => {
+    return async dispatch => {
+        dispatch(fetchUserOrdersRequest());
+        try {
+            const response = await axiosApi.get(`/orders/user/${userId}`);
+            dispatch(fetchUserOrdersSuccess(response.data));
+        } catch (e) {
+            dispatch(fetchUserOrdersFailure(e.message));
+            dispatch(addNotification('Fetch user orders failed!', 'error'));
+        }
+    };
+};
 
 export const createOrder = (orderData) => {
     return async dispatch => {
