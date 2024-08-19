@@ -1,13 +1,18 @@
-const path = require('path');
-const rootPath = __dirname;
-require('dotenv').config();
+import path from 'path';
+import dotenv from 'dotenv';
 
-module.exports = {
+dotenv.config();
+
+const rootPath = path.resolve();
+
+export default {
     rootPath,
     publicPath: path.join(rootPath, 'public'),
     mongo: {
-        db: process.env.MONGODB_URL || 'mongodb+srv://mamzigran:9fAOhC9aT2zMkQaw@cluster0.xnmipzn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
+        db: process.env.MONGODB_URL || 'mongodb+srv://mamzigran:9fAOhC9aT2zMkQaw@cluster0.xnmipzn.mongodb.net/magazin?retryWrites=true&w=majority&appName=Cluster0',
         options: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
         },
     },
 };

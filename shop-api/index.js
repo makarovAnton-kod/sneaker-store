@@ -1,19 +1,21 @@
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const exitHook = require('async-exit-hook');
-const products = require('./routers/products');
-const categories = require('./routers/categories');
-const users = require('./routers/users');
-const orders = require('./routers/orders');
-const seedData = require('./fixtures');
-const { join } = require('path');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import exitHook from 'async-exit-hook';
+import products from './routers/products.js';
+import categories from './routers/categories.js';
+import users from './routers/users.js';
+import orders from './routers/orders.js';
+import path, { join } from 'path';
+import dotenv from 'dotenv';
+import config from "./config.js";
+
+dotenv.config();
 
 const app = express();
 const port = 8000;
+app.use(express.static('public'));
 
-app.use('/images', express.static(join(__dirname, 'public/images')));
 app.use(express.json());
 app.use(cors());
 app.use('/categories', categories);
@@ -21,10 +23,6 @@ app.use('/users', users);
 app.use('/products', products);
 app.use('/orders', orders);
 
-// Обработка favicon.ico
-app.get('/favicon.ico', (req, res) => {
-    res.sendFile(join(__dirname, 'public', 'favicon.ico'));
-});
 
 // Обработка корневого маршрута
 app.get('/', (req, res) => {
@@ -35,9 +33,6 @@ const run = async () => {
     try {
         await mongoose.connect(process.env.MONGODB_URL);
         console.log('MongoDB connected');
-
-        await seedData();
-        console.log('Data seeded successfully');
 
         app.listen(port, () => {
             console.log(`Сервер запущен на порту ${port}!`);
@@ -55,4 +50,4 @@ exitHook(async () => {
     console.log('MongoDB отключен');
 });
 
-module.exports = app;
+export default app;

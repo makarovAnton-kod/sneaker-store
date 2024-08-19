@@ -1,5 +1,6 @@
-const express = require('express');
-const Category = require("../models/Category");
+import express from 'express';
+import Category from '../models/Category.js';
+
 const router = express.Router();
 
 // Получение списка всех категорий
@@ -17,7 +18,7 @@ router.get('/:id', async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
         if (!category) {
-            return res.status(404).send({error: 'Category not found'});
+            return res.status(404).send({ error: 'Category not found' });
         }
         res.send(category);
     } catch (e) {
@@ -43,7 +44,7 @@ router.put('/:id', async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
         if (!category) {
-            return res.status(404).send({error: 'Category not found'});
+            return res.status(404).send({ error: 'Category not found' });
         }
 
         category.title = req.body.title;
@@ -61,14 +62,14 @@ router.delete('/:id', async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
         if (!category) {
-            return res.status(404).send({error: 'Category not found'});
+            return res.status(404).send({ error: 'Category not found' });
         }
 
         await category.deleteOne();
-        res.send({message: 'Category deleted successfully'});
+        res.send({ message: 'Category deleted successfully' });
     } catch (e) {
         res.sendStatus(500);
     }
 });
 
-module.exports = router;
+export default router;

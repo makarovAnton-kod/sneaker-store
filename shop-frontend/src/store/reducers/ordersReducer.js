@@ -11,6 +11,8 @@ const initialState = {
     orders: [],
     orderLoading: false,
     orderError: null,
+    fetchLoading: false,
+    error: null,
 };
 
 const ordersReducer = (state = initialState, action) => {

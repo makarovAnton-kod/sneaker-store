@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
     Button,
     Card,
@@ -9,18 +9,13 @@ import {
     CardHeader,
     CardMedia,
     Grid,
-    IconButton,
     Typography
 } from "@mui/material";
-import {ArrowForward, Delete, Edit} from "@mui/icons-material";
-import {useDispatch, useSelector} from "react-redux";
+import { ArrowForward, Delete, Edit } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
 import imageNotAvailable from '../../assets/image-not-available.jpg';
-import intel from "../../assets/intel.jpg";
-import cpu from "../../assets/cpu.png";
-import hdd from "../../assets/hdd.jpeg";
-import ncn from "../../assets/ncn.jpeg";
-import {deleteProduct} from "../../store/actions/productsActions";
-import {apiUrl} from "../../config";
+import { deleteProduct } from "../../store/actions/productsActions";
+import { apiUrl } from "../../config";
 
 const ProductItem = ({ id, title, price, image }) => {
     const dispatch = useDispatch();
@@ -28,21 +23,15 @@ const ProductItem = ({ id, title, price, image }) => {
 
     let cardImage = imageNotAvailable;
     if (image) {
-        if (image.includes('intel')) {
-            cardImage = intel;
-        } else if (image.includes('cpu')) {
-            cardImage = cpu;
-        } else if (image.includes('hdd')) {
-            cardImage = hdd;
-        } else if (image.includes('ncn')) {
-            cardImage = ncn;
-        } else {
+        if(image.includes('fixtures')){
             cardImage = apiUrl + '/' + image;
+        }else {
+            cardImage = apiUrl + '/images/' + image;
         }
     }
 
     const handleDelete = async () => {
-        if (window.confirm('Вы уверены, что хотите удалить этот продукт?')) {
+        if (window.confirm('Вы уверены, что хотите удалить эту игру?')) {
             await dispatch(deleteProduct(id));
         }
     };
@@ -54,79 +43,99 @@ const ProductItem = ({ id, title, price, image }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #1F1C2C, #928DAB)', // Градиентный фон
+                borderRadius: '16px', // Закругленные углы
                 overflow: 'hidden',
+                transition: 'transform 0.4s ease, box-shadow 0.4s ease',
                 '&:hover': {
-                    boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.15)',
-                    transform: 'translateY(-2px)',
-                    transition: 'all 0.3s ease-in-out',
+                    transform: 'scale(1.05)', // Масштабирование при наведении
+                    boxShadow: '0px 10px 40px rgba(0, 0, 0, 0.25)', // Глубокая тень
                 }
             }}>
                 <CardHeader
-                    title={<Typography variant="h6" sx={{ fontWeight: 'bold' }}>{title}</Typography>}
-                    sx={{ paddingBottom: 0 }}
+                    title={
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                fontWeight: 'bold',
+                                color: '#FFD700',
+                                textAlign: 'center',
+                                textShadow: '0px 0px 10px #FF4500', // Свечение текста
+                                letterSpacing: '0.1em', // Расстояние между буквами
+                                textTransform: 'uppercase', // Верхний регистр
+                                animation: 'glow 1.5s infinite ease-in-out' // Анимация свечения
+                            }}
+                        >
+                            {title}
+                        </Typography>
+                    }
+                    sx={{
+                        backgroundColor: '#1F1C2C', // Темный фон заголовка
+                        borderBottom: '2px solid #FF4500', // Оранжевая полоса снизу
+                        padding: '12px', // Увеличенные отступы
+                        boxShadow: '0px 4px 15px rgba(255, 69, 0, 0.5)', // Тень заголовка
+                        borderRadius: '12px 12px 0 0' // Закругленные верхние углы
+                    }}
                 />
+
                 <CardMedia
                     title={title}
                     image={cardImage}
                     sx={{
-                        paddingTop: '56.25%',
-                        backgroundSize: 'contain',
+                        paddingTop: '60%', // Более высокий блок изображения
+                        backgroundSize: 'cover', // Обрезка изображения
                         backgroundPosition: 'center',
-                        transition: 'transform 0.3s ease-in-out',
-                        '&:hover': {
-                            transform: 'scale(1.05)',
-                        }
+                        borderBottom: '3px solid #FF4500', // Оранжевая полоса внизу изображения
                     }}
                 />
-                <CardContent sx={{ padding: '16px', textAlign: 'center' }}>
-                    <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 'bold' }}>
-                        Price: {price} руб.
+
+                <CardContent sx={{ padding: '24px', textAlign: 'center' }}>
+                    <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#FF4500', fontSize: '2rem', marginBottom: '8px' }}>
+                        {price.toLocaleString()} <span style={{ fontSize: '1rem', verticalAlign: 'super', color: '#FFD700' }}>₽</span>
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: '#FFFFFF', fontStyle: 'italic' }}>
+                        Лучшая цена для геймеров!
                     </Typography>
                 </CardContent>
-                <CardActions disableSpacing sx={{ justifyContent: 'space-between', padding: '8px 16px' }}>
-                    <IconButton
+                <CardActions disableSpacing sx={{ justifyContent: 'space-between', padding: '16px' }}>
+                    <Button
                         component={Link}
-                        to={'/products/' + id}
+                        to={`/products/${id}`}
                         variant="contained"
                         sx={{
-                            color: 'primary.main',
+                            backgroundColor: '#FF4500',
+                            color: '#FFFFFF',
+                            borderRadius: '8px',
+                            textTransform: 'none',
+                            padding: '8px 16px',
+                            fontWeight: 'bold',
                             '&:hover': {
-                                color: 'primary.dark',
+                                backgroundColor: '#E03C00',
                             }
-                        }}>
-                        <ArrowForward />
+                        }}
+                    >
                         Подробнее
-                    </IconButton>
+                    </Button>
                     {user && user.role === 'admin' && (
-                        <div
-                            style={{
-                                display: 'flex',
-                                gap: '8px',
-                                marginLeft: 'auto',
-                                flexDirection: 'row',
-                                flexWrap: 'wrap',
-                                '@media (max-width: 600px)': {
-                                    flexDirection: 'column', // Вертикально на маленьких экранах
-                                    alignItems: 'center', // Центрируем кнопки
-                                    width: '100%', // Занимаем всю ширину
-                                },
-                            }}
-                        >
+                        <div style={{
+                            display: 'flex',
+                            gap: '10px',
+                        }}>
                             <Button
                                 component={Link}
-                                to={'/edit/' + id}
+                                to={`/edit/${id}`}
                                 variant="contained"
-                                color="info"
-                                size="small" // Уменьшаем размер кнопки
-                                startIcon={<Edit/>}
+                                color="secondary"
+                                size="small"
+                                startIcon={<Edit />}
                                 sx={{
+                                    backgroundColor: '#007BFF',
+                                    color: '#FFFFFF',
                                     textTransform: 'none',
-                                    padding: '4px 8px', // Уменьшаем отступы внутри кнопки
-                                    fontSize: '0.75rem', // Уменьшаем размер шрифта
+                                    padding: '6px 12px',
+                                    fontWeight: 'bold',
                                     '&:hover': {
-                                        backgroundColor: 'info.dark',
+                                        backgroundColor: '#0056b3',
                                     }
                                 }}
                             >
@@ -135,15 +144,17 @@ const ProductItem = ({ id, title, price, image }) => {
                             <Button
                                 variant="contained"
                                 color="error"
-                                size="small" // Уменьшаем размер кнопки
-                                startIcon={<Delete/>}
+                                size="small"
+                                startIcon={<Delete />}
                                 onClick={handleDelete}
                                 sx={{
+                                    backgroundColor: '#FF4500',
+                                    color: '#FFFFFF',
                                     textTransform: 'none',
-                                    padding: '4px 8px', // Уменьшаем отступы внутри кнопки
-                                    fontSize: '0.75rem', // Уменьшаем размер шрифта
+                                    padding: '6px 12px',
+                                    fontWeight: 'bold',
                                     '&:hover': {
-                                        backgroundColor: 'error.dark',
+                                        backgroundColor: '#E03C00',
                                     }
                                 }}
                             >

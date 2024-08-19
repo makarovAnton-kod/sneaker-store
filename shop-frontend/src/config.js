@@ -1,1 +1,1 @@
-export const apiUrl = 'https://shop-api-michail.vercel.app';
+export const apiUrl = 'http://localhost:8000';

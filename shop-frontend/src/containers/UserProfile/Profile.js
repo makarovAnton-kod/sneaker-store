@@ -40,7 +40,6 @@ const Profile = () => {
     const [userData, setUserData] = useState({
         displayName: '',
         email: '',
-        // добавьте другие поля, которые нужно редактировать
     });
 
     useEffect(() => {
@@ -48,7 +47,6 @@ const Profile = () => {
             setUserData({
                 displayName: user.displayName,
                 email: user.email,
-                // добавьте другие поля, которые нужно редактировать
             });
             dispatch(fetchOrders(user._id));
             dispatch(fetchUser(user._id));
@@ -74,12 +72,14 @@ const Profile = () => {
     // Функция для отображения сгруппированных заказов
     const renderGroupedOrders = (groupedOrders) => {
         return (
-            <List>
+            <List sx={{ backgroundColor: '#333333', borderRadius: '10px', padding: '10px' }}>
                 {groupedOrders.map(order => (
-                    <ListItem key={order.title}>
+                    <ListItem key={order.title} sx={{ padding: '10px', borderBottom: '1px solid #444444' }}>
                         <ListItemText
                             primary={`Товар: ${order.title}`}
                             secondary={`Цена: ${order.price} KGS - Количество: ${order.totalQuantity} - Сумма: ${order.totalPrice} KGS`}
+                            primaryTypographyProps={{ sx: { color: '#FFD700', fontWeight: 'bold' } }} // Золотой цвет текста для основного текста
+                            secondaryTypographyProps={{ sx: { color: '#FFFFFF' } }} // Белый цвет текста для второстепенного текста
                         />
                     </ListItem>
                 ))}
@@ -88,13 +88,22 @@ const Profile = () => {
     };
 
     if (!user) {
-        return <Typography variant="h6">User is not logged in.</Typography>;
+        return <Typography variant="h6">Пользователь не авторизован.</Typography>;
     }
 
     return (
         <Container maxWidth="md">
-            <Paper elevation={3} sx={{ padding: 3, marginTop: 3 }}>
-                <Typography variant="h4" gutterBottom>Мой профиль</Typography>
+            <Paper
+                elevation={3}
+                sx={{
+                    backgroundColor: '#2c2c2c', // Темный фон
+                    padding: 3,
+                    marginTop: 3,
+                    color: '#FFFFFF', // Белый цвет текста
+                    boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.5)',
+                }}
+            >
+                <Typography variant="h4" gutterBottom sx={{ color: '#FFD700' }}>Мой профиль</Typography>
                 {editMode ? (
                     <form noValidate autoComplete="off">
                         <TextField
@@ -104,6 +113,12 @@ const Profile = () => {
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
+                            variant="outlined"
+                            sx={{
+                                input: { color: '#FFFFFF' },
+                                label: { color: '#FFD700' }, // Золотой цвет лейбла
+                                fieldset: { borderColor: '#FFD700' } // Золотая рамка
+                            }}
                         />
                         <TextField
                             label="Email"
@@ -113,20 +128,37 @@ const Profile = () => {
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
+                            variant="outlined"
+                            sx={{
+                                input: { color: '#FFFFFF' },
+                                label: { color: '#FFD700' }, // Золотой цвет лейбла
+                                fieldset: { borderColor: '#FFD700' } // Золотая рамка
+                            }}
                         />
-                        {/* Добавьте другие поля */}
                         <Button
                             variant="contained"
-                            color="primary"
                             onClick={handleSave}
-                            sx={{ marginRight: 1 }}
+                            sx={{
+                                marginRight: 1,
+                                backgroundColor: '#1e90ff',
+                                color: '#FFFFFF',
+                                '&:hover': {
+                                    backgroundColor: '#1c86ee',
+                                }
+                            }}
                         >
                             Сохранить
                         </Button>
                         <Button
                             variant="contained"
-                            color="secondary"
                             onClick={() => setEditMode(false)}
+                            sx={{
+                                backgroundColor: '#dc143c',
+                                color: '#FFFFFF',
+                                '&:hover': {
+                                    backgroundColor: '#c11b22',
+                                }
+                            }}
                         >
                             Отмена
                         </Button>
@@ -135,20 +167,34 @@ const Profile = () => {
                     <div>
                         <Typography variant="body1"><strong>Имя:</strong> {user.displayName}</Typography>
                         <Typography variant="body1"><strong>Email:</strong> {user.email}</Typography>
-                        {/* Другие данные пользователя */}
                         <Button
                             variant="contained"
-                            color="primary"
                             onClick={() => setEditMode(true)}
-                            sx={{ marginTop: 2 }}
+                            sx={{
+                                marginTop: 2,
+                                backgroundColor: '#1e90ff',
+                                color: '#FFFFFF',
+                                '&:hover': {
+                                    backgroundColor: '#1c86ee',
+                                }
+                            }}
                         >
                             Редактировать
                         </Button>
                     </div>
                 )}
             </Paper>
-            <Paper elevation={3} sx={{ padding: 3, marginTop: 3 }}>
-                <Typography variant="h5" gutterBottom>Мои заказы</Typography>
+            <Paper
+                elevation={3}
+                sx={{
+                    backgroundColor: '#2c2c2c', // Темный фон
+                    padding: 3,
+                    marginTop: 3,
+                    color: '#FFFFFF', // Белый цвет текста
+                    boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.5)',
+                }}
+            >
+                <Typography variant="h5" gutterBottom sx={{ color: '#FFD700' }}>Мои заказы</Typography>
                 {orders && orders.length > 0 ? (
                     renderGroupedOrders(groupOrders(orders))
                 ) : (

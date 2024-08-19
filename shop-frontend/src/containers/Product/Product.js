@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import {
     Box,
     Button,
@@ -9,17 +9,14 @@ import {
     DialogContentText,
     DialogTitle,
     Paper,
+    TextField,
     Typography
 } from "@mui/material";
-import { fetchProduct } from "../../store/actions/productsActions";
-import { apiUrl } from '../../config';
-import { createOrder } from "../../store/actions/ordersActions";
-import { historyReplace } from '../../store/actions/historyActions';
+import {fetchProduct} from "../../store/actions/productsActions";
+import {apiUrl} from '../../config';
+import {createOrder} from "../../store/actions/ordersActions";
+import {historyReplace} from '../../store/actions/historyActions';
 import imageNotAvailable from "../../assets/image-not-available.jpg";
-import intel from "../../assets/intel.jpg";
-import cpu from "../../assets/cpu.png";
-import hdd from "../../assets/hdd.jpeg";
-import ncn from "../../assets/ncn.jpeg";
 
 const Product = ({ match }) => {
     const dispatch = useDispatch();
@@ -27,24 +24,39 @@ const Product = ({ match }) => {
     const user = useSelector(state => state.users.user);
     const userId = user ? user._id : null;
     const [openDialog, setOpenDialog] = useState(false);
+    const [showOrderForm, setShowOrderForm] = useState(false);
+    const [orderData, setOrderData] = useState({
+        address: '',
+        comment: '',
+        quantity: 1,
+    });
 
     useEffect(() => {
         dispatch(fetchProduct(match.params.id));
     }, [dispatch, match.params.id]);
 
-    const handleOrder = async () => {
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setOrderData(prevState => ({ ...prevState, [name]: value }));
+    };
+
+    const handleOrder = () => {
         if (!userId) {
             setOpenDialog(true);
-            return;
+        } else {
+            setShowOrderForm(true);
         }
+    };
 
-        const orderData = {
+    const handleSubmitOrder = async () => {
+        const newOrderData = {
+            ...orderData,
             productId: product._id,
             userId: userId,
-            quantity: 1,
-            totalPrice: product.price
+            totalPrice: product.price * orderData.quantity
         };
-        await dispatch(createOrder(orderData));
+
+        await dispatch(createOrder(newOrderData));
         dispatch(historyReplace('/'));
     };
 
@@ -57,18 +69,13 @@ const Product = ({ match }) => {
 
     let imageUrl = imageNotAvailable;
     if (product && product.image) {
-        if (product.image.includes('intel')) {
-            imageUrl = intel;
-        } else if (product.image.includes('cpu')) {
-            imageUrl = cpu;
-        } else if (product.image.includes('hdd')) {
-            imageUrl = hdd;
-        } else if (product.image.includes('ncn')) {
-            imageUrl = ncn;
-        } else {
+        if(product.image.includes('fixtures')){
             imageUrl = apiUrl + '/' + product.image;
+        } else {
+            imageUrl = apiUrl + '/images/' + product.image;
         }
     }
+
     return (
         product &&
         <Paper elevation={4} square sx={{ padding: "20px", maxWidth: '800px', margin: '20px auto' }}>
@@ -80,24 +87,69 @@ const Product = ({ match }) => {
                 {product.price} руб.
             </Typography>
             <Typography variant="body1" paragraph>{product.description}</Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => dispatch(historyReplace('/'))}
-                    sx={{ padding: '10px 20px' }}
-                >
-                    Вернуться назад
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleOrder}
-                    sx={{ padding: '10px 20px' }}
-                >
-                    Заказать
-                </Button>
-            </Box>
+
+            {showOrderForm ? (
+                <Box component="form" sx={{ marginTop: '20px' }}>
+                    <TextField
+                        label="Адрес доставки"
+                        name="address"
+                        value={orderData.address}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                        required
+                    />
+                    <TextField
+                        label="Комментарий"
+                        name="comment"
+                        value={orderData.comment}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                        multiline
+                        rows={3}
+                    />
+                    <TextField
+                        label="Количество"
+                        name="quantity"
+                        type="number"
+                        value={orderData.quantity}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                        required
+                        inputProps={{ min: 1 }}
+                    />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmitOrder}
+                        sx={{ marginTop: '20px', padding: '10px 20px' }}
+                    >
+                        Подтвердить заказ
+                    </Button>
+                </Box>
+            ) : (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => dispatch(historyReplace('/'))}
+                        sx={{ padding: '10px 20px' }}
+                    >
+                        Вернуться назад
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleOrder}
+                        sx={{ padding: '10px 20px' }}
+                    >
+                        Заказать
+                    </Button>
+                </Box>
+            )}
+
             <Dialog
                 open={openDialog}
                 onClose={() => handleCloseDialog(false)}

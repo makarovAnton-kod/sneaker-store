@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {Link as RouterLink} from 'react-router-dom';
-import {Alert, Avatar, Container, Grid, Link, Typography} from "@mui/material";
-import {LockOutlined} from "@mui/icons-material";
-import {useDispatch, useSelector} from "react-redux";
-import {clearRegisterErrors, registerUser} from "../../store/actions/usersActions";
+import React, { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { Alert, Avatar, Container, Grid, Link, Typography } from "@mui/material";
+import { LockOutlined } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { clearRegisterErrors, registerUser } from "../../store/actions/usersActions";
 import FormElement from "../../components/UI/Form/FormElement/FormElement";
 import ButtonWithProgress from "../../components/UI/ButtonWithProgress/ButtonWithProgress";
 
@@ -21,7 +21,7 @@ const Register = () => {
     useEffect(() => {
         return () => {
             dispatch(clearRegisterErrors());
-        }
+        };
     }, [dispatch]);
 
     const inputChangeHandler = e => {
@@ -49,15 +49,15 @@ const Register = () => {
     return (
         <Container maxWidth="xs">
             <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Avatar style={{ margin: '8px', backgroundColor: 'blue' }}>
+                <Avatar style={{ margin: '8px', backgroundColor: '#FFD700' }}>
                     <LockOutlined />
                 </Avatar>
                 <Typography component="h1" variant="h6">
-                    Sign up
+                    Регистрация
                 </Typography>
                 {error && (
-                    <Alert severity="error" style={{ marginBottom: '16px' }}>
-                        Error! {error.message}
+                    <Alert severity="error" style={{ marginBottom: '16px', backgroundColor: '#2C2F33', color: '#FFFFFF' }}>
+                        Ошибка! {error.message}
                     </Alert>
                 )}
                 <Grid
@@ -69,7 +69,7 @@ const Register = () => {
                 >
                     <FormElement
                         required={true}
-                        label="Email"
+                        label="Электронная почта"
                         name="email"
                         value={user.email}
                         onChange={inputChangeHandler}
@@ -79,7 +79,7 @@ const Register = () => {
 
                     <FormElement
                         required={true}
-                        label="Display Name"
+                        label="Имя пользователя"
                         name="displayName"
                         value={user.displayName}
                         onChange={inputChangeHandler}
@@ -90,7 +90,7 @@ const Register = () => {
                     <FormElement
                         type="password"
                         required={true}
-                        label="Password"
+                        label="Пароль"
                         name="password"
                         value={user.password}
                         onChange={inputChangeHandler}
@@ -106,16 +106,23 @@ const Register = () => {
                             fullWidth
                             variant="contained"
                             color="primary"
-                            style={{ margin: '16px 0' }}
+                            style={{
+                                margin: '16px 0',
+                                backgroundColor: '#FF4500', // Оранжево-красный цвет кнопки
+                                color: '#FFFFFF', // Белый цвет текста
+                                '&:hover': {
+                                    backgroundColor: '#E03C00', // Темный оттенок при наведении
+                                },
+                            }}
                         >
-                            Sign Up
+                            Зарегистрироваться
                         </ButtonWithProgress>
                     </Grid>
                 </Grid>
                 <Grid container justifyContent="flex-end">
                     <Grid item>
-                        <Link component={RouterLink} to="/login">
-                            Already have an account? Sign in
+                        <Link component={RouterLink} to="/login" style={{ color: '#FFD700' }}>
+                            Уже есть аккаунт? Войти
                         </Link>
                     </Grid>
                 </Grid>

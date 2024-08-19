@@ -1,8 +1,9 @@
-const express = require('express');
-const Product = require("../models/Product");
-const auth = require("../middleware/auth");
-const permit = require("../middleware/permit");
-const {imagesUpload} = require("../multer");
+import express from 'express';
+import mongoose from 'mongoose'; // Для обработки ValidationError
+import Product from '../models/Product.js';
+import auth from '../middleware/auth.js';
+import permit from '../middleware/permit.js';
+import imagesUpload from '../multer.js';
 
 const router = express.Router();
 
@@ -113,14 +114,14 @@ router.delete('/:id', auth, permit('admin'), async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
         if (!product) {
-            return res.status(404).send({error: 'Product not found'});
+            return res.status(404).send({ error: 'Product not found' });
         }
 
         await product.deleteOne();
-        res.send({message: 'Product deleted successfully'});
+        res.send({ message: 'Product deleted successfully' });
     } catch (e) {
         res.sendStatus(500);
     }
 });
 
-module.exports = router;
+export default router;

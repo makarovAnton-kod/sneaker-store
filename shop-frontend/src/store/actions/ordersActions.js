@@ -1,5 +1,5 @@
 import axiosApi from "../../axiosApi";
-import {addNotification} from './notifierActions';
+import { addNotification } from './notifierActions';
 
 export const CREATE_ORDER_REQUEST = 'CREATE_ORDER_REQUEST';
 export const CREATE_ORDER_SUCCESS = 'CREATE_ORDER_SUCCESS';
@@ -25,8 +25,9 @@ export const createOrder = (orderData) => {
         } catch (e) {
             dispatch(createOrderFailure(e.response ? e.response.data : e.message));
         }
-    }
+    };
 };
+
 export const fetchOrders = (userId) => {
     return async dispatch => {
         dispatch(fetchOrdersRequest());
@@ -35,7 +36,7 @@ export const fetchOrders = (userId) => {
             dispatch(fetchOrdersSuccess(response.data));
         } catch (e) {
             dispatch(fetchOrdersFailure(e.message));
-            dispatch(addNotification('Fetch orders failed!', 'error'));
+            dispatch(addNotification('Не удалось загрузить заказы!', 'error'));
         }
     };
 };

@@ -1,56 +1,50 @@
-const mongoose = require('mongoose');
-const { nanoid } = require('nanoid');
-const User = require('./models/User');
-const Category = require('./models/Category');
-const Product = require('./models/Product');
-const SeedStatus = require('./models/SeedStatus');
+import mongoose from 'mongoose';
+import { nanoid } from 'nanoid';
+import config from './config.js';
+import User from './models/User.js';
+import Category from './models/Category.js';
+import Product from './models/Product.js';
 
 const run = async () => {
-    try {
-        const seedStatus = await SeedStatus.findOne();
-        if (seedStatus && seedStatus.seeded) {
-            console.log('Data already seeded');
-            return;
-        }
+    mongoose.set('strictQuery', false);
+    await mongoose.connect(config.mongo.db, config.mongo.options); // Подключаемся к базе данных
+    const db = mongoose.connection;
 
-        // Очистка всех коллекций
-        const collections = await mongoose.connection.db.listCollections().toArray();
-        for (const coll of collections) {
-            await mongoose.connection.db.dropCollection(coll.name);
-        }
+    try {
+        await db.dropCollection('users');
+        await db.dropCollection('categories');
+        await db.dropCollection('orders');
+        await db.dropCollection('products');
 
         // Создание категорий
-        const [cpuCategory, hddCategory] = await Category.create([
-            { title: 'CPUs', description: 'Central Processor Units' },
-            { title: 'HDDs', description: 'Hard Disk Drives' }
+        const [actionCategory, rpgCategory, strategyCategory] = await Category.create([
+            { title: 'Экшн', description: 'Захватывающие игры с динамичным сюжетом' },
+            { title: 'РПГ', description: 'Ролевые игры с глубоким погружением' },
+            { title: 'Стратегии', description: 'Игры, требующие тактического мышления' }
         ]);
 
         // Создание продуктов
         await Product.create([
-            { title: "Intel core i7", price: 300, category: cpuCategory._id, image: 'images/intel.jpg' },
-            { title: "Seagate BarraCuda 1TB", price: 150, category: hddCategory._id, image: 'images/hdd.jpg' },
-            { title: "AMD Ryzen 5 3600", price: 200, category: cpuCategory._id, image: 'images/intel.jpeg' },
-            { title: "Western Digital 2TB", price: 180, category: hddCategory._id, image: 'images/ncn.jpeg' }
+            { title: "Cyberpunk 2077", price: 1999, category: actionCategory._id, image: 'fixtures/cyberpunk2077.jpeg' },
+            { title: "The Witcher 3: Wild Hunt", price: 1499, category: rpgCategory._id, image: 'fixtures/witcher3.jpeg' },
+            { title: "Civilization VI", price: 999, category: strategyCategory._id, image: 'fixtures/civ6.jpeg' },
+            { title: "DOOM Eternal", price: 1799, category: actionCategory._id, image: 'fixtures/doom_eternal.jpeg' },
+            { title: "Dark Souls III", price: 1299, category: rpgCategory._id, image: 'fixtures/darksouls3.jpeg' },
+            { title: "Starcraft II", price: 1099, category: strategyCategory._id, image: 'fixtures/starcraft2.jpeg' }
         ]);
 
         // Создание пользователей
         await User.create([
-            { email: 'admin@gmail.com', password: 'admin', token: nanoid(), role: 'admin', displayName: 'Admin' },
-            { email: 'user@gmail.com', password: 'user', token: nanoid(), role: 'user', displayName: 'User' }
+            { email: 'admin@gmail.com', password: 'admin', token: nanoid(), role: 'admin', displayName: 'Администратор' },
+            { email: 'gamer@gmail.com', password: 'gamer', token: nanoid(), role: 'user', displayName: 'Геймер' }
         ]);
 
-        // Установка флага, что данные загружены
-        if (!seedStatus) {
-            await SeedStatus.create({ seeded: true });
-        } else {
-            seedStatus.seeded = true;
-            await seedStatus.save();
-        }
-
-        console.log('Data seeded successfully');
+        console.log('Данные успешно загружены и перезаписаны');
     } catch (error) {
-        console.error('Error seeding data:', error);
+        console.error('Ошибка при загрузке данных:', error);
+    } finally {
+        await mongoose.disconnect(); // Закрываем соединение с базой данных
     }
 };
 
-module.exports = run;
+run().then(() => console.log('Скрипт завершен')).catch(console.error);

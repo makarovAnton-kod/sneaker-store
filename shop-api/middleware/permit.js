@@ -9,4 +9,4 @@ const permit = (...roles) => {
         next();
     };
 };
-module.exports = permit;
+export default permit;

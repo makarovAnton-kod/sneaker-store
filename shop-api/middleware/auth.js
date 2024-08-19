@@ -1,4 +1,5 @@
-const User = require("../models/User");
+import User from "../models/User.js";
+
 const auth = async (req, res, next) => {
     const token = req.get('Authorization');
     if (!token) {
@@ -11,4 +12,4 @@ const auth = async (req, res, next) => {
     req.user = user;
     next();
 };
-module.exports = auth;
+export default auth;

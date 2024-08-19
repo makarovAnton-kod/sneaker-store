@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {Link as RouterLink} from 'react-router-dom';
-import {makeStyles} from "tss-react/mui";
-import {Alert, Avatar, Container, Grid, Link, Typography} from "@mui/material";
-import {LockOpenOutlined} from "@mui/icons-material";
-import {useDispatch, useSelector} from "react-redux";
-import {clearRegisterErrors, loginUser} from "../../store/actions/usersActions";
+import React, { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { makeStyles } from "tss-react/mui";
+import { Alert, Avatar, Container, Grid, Link, Typography } from "@mui/material";
+import { LockOpenOutlined } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { clearRegisterErrors, loginUser } from "../../store/actions/usersActions";
 import FormElement from "../../components/UI/Form/FormElement/FormElement";
 import ButtonWithProgress from "../../components/UI/ButtonWithProgress/ButtonWithProgress";
+
 const useStyles = makeStyles()(theme => ({
     paper: {
         marginTop: theme.spacing(8),
@@ -16,19 +17,34 @@ const useStyles = makeStyles()(theme => ({
     },
     avatar: {
         margin: theme.spacing(1),
-        backgroundColor: `${theme.palette.secondary.main} !important`,
+        backgroundColor: '#FFD700 !important', // Золотой цвет аватара
     },
     form: {
         marginTop: theme.spacing(1),
     },
     submit: {
         margin: `${theme.spacing(2, 0)} !important`,
+        backgroundColor: '#FF4500', // Оранжево-красный цвет кнопки
+        color: '#FFFFFF', // Белый цвет текста
+        '&:hover': {
+            backgroundColor: '#E03C00', // Более темный оттенок при наведении
+        },
     },
     alert: {
         margin: theme.spacing(3, 0),
         width: '100%',
+        backgroundColor: '#2C2F33', // Темный фон для ошибок
+        color: '#FFFFFF', // Белый цвет текста ошибки
+    },
+    link: {
+        color: '#FFD700', // Золотой цвет ссылки
+        '&:hover': {
+            color: '#FF4500', // Оранжево-красный цвет при наведении
+            textShadow: '0px 0px 8px #FF4500', // Свечение при наведении
+        },
     },
 }));
+
 const Login = () => {
     const { classes } = useStyles();
     const dispatch = useDispatch();
@@ -38,31 +54,35 @@ const Login = () => {
         email: '',
         password: '',
     });
+
     useEffect(() => {
         return () => {
             dispatch(clearRegisterErrors());
-        }
+        };
     }, [dispatch]);
+
     const inputChangeHandler = e => {
-        const {name, value} = e.target;
-        setUser(prev => ({...prev, [name]: value}));
+        const { name, value } = e.target;
+        setUser(prev => ({ ...prev, [name]: value }));
     };
+
     const submitFormHandler = async e => {
         e.preventDefault();
-        await dispatch(loginUser({...user}));
+        await dispatch(loginUser({ ...user }));
     };
+
     return (
         <Container maxWidth="xs">
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
-                    <LockOpenOutlined/>
+                    <LockOpenOutlined />
                 </Avatar>
                 <Typography component="h1" variant="h6">
-                    Sign in
+                    Вход
                 </Typography>
                 {error && (
                     <Alert severity="error" className={classes.alert}>
-                        Error! {error.message}
+                        Ошибка! {error.message}
                     </Alert>
                 )}
                 <Grid
@@ -73,7 +93,7 @@ const Login = () => {
                 >
                     <FormElement
                         required={true}
-                        label="Email"
+                        label="Электронная почта"
                         name="email"
                         value={user.email}
                         onChange={inputChangeHandler}
@@ -81,7 +101,7 @@ const Login = () => {
                     <FormElement
                         type="password"
                         required={true}
-                        label="Password"
+                        label="Пароль"
                         name="password"
                         value={user.password}
                         onChange={inputChangeHandler}
@@ -96,14 +116,14 @@ const Login = () => {
                             color="primary"
                             className={classes.submit}
                         >
-                            Sign In
+                            Войти
                         </ButtonWithProgress>
                     </Grid>
                 </Grid>
                 <Grid container justifyContent="flex-end">
                     <Grid item>
-                        <Link component={RouterLink} to="/register">
-                            Or sign up
+                        <Link component={RouterLink} to="/register" className={classes.link}>
+                            Или зарегистрируйтесь
                         </Link>
                     </Grid>
                 </Grid>
@@ -111,4 +131,5 @@ const Login = () => {
         </Container>
     );
 };
+
 export default Login;

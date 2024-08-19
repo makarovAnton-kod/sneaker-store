@@ -1,16 +1,17 @@
-const express = require('express');
-const Order = require('../models/Order'); // Предполагая, что у вас есть модель Order
-const auth = require('../middleware/auth'); // Middleware для аутентификации
+import express from 'express';
+import Order from '../models/Order.js';
+import auth from '../middleware/auth.js';
+
 const router = express.Router();
 
 // Создание нового заказа
 router.post('/', auth, async (req, res) => {
     try {
         const order = new Order({
-            userId: req.user._id, // auth middleware добавляет user в req
+            userId: req.user._id,
             productId: req.body.productId,
-            quantity: req.body.quantity, // Если есть
-            totalPrice: req.body.totalPrice // Если есть
+            quantity: req.body.quantity || 1,
+            totalPrice: req.body.totalPrice || 0
         });
         await order.save();
         res.status(201).send(order);
@@ -21,7 +22,6 @@ router.post('/', auth, async (req, res) => {
 
 // Получение всех заказов для конкретного пользователя
 router.get('/user/:id', auth, async (req, res) => {
-    console.log(req.params.id)
     try {
         const orders = await Order.find({ userId: req.params.id }).populate('productId');
         res.status(200).send(orders);
@@ -30,4 +30,4 @@ router.get('/user/:id', auth, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
