@@ -10,12 +10,12 @@ const Anonymous = () => {
                 to="/register"
                 color="inherit"
                 sx={{
-                    color: '#FFD700', // Золотой цвет текста
-                    textShadow: '0px 0px 8px #FF4500', // Свечение текста
-                    fontWeight: 'bold', // Жирный текст
+                    color: '#FFD700',
+                    textShadow: '0px 0px 8px #FF4500',
+                    fontWeight: 'bold',
                     '&:hover': {
-                        color: '#FF4500', // Оранжево-красный цвет при наведении
-                        textShadow: '0px 0px 10px #FF4500', // Усиленное свечение при наведении
+                        color: '#FF4500',
+                        textShadow: '0px 0px 10px #FF4500',
                     },
                 }}
             >
@@ -26,12 +26,12 @@ const Anonymous = () => {
                 to="/login"
                 color="inherit"
                 sx={{
-                    color: '#FFD700', // Золотой цвет текста
-                    textShadow: '0px 0px 8px #FF4500', // Свечение текста
-                    fontWeight: 'bold', // Жирный текст
+                    color: '#FFD700',
+                    textShadow: '0px 0px 8px #FF4500',
+                    fontWeight: 'bold',
                     '&:hover': {
-                        color: '#FF4500', // Оранжево-красный цвет при наведении
-                        textShadow: '0px 0px 10px #FF4500', // Усиленное свечение при наведении
+                        color: '#FF4500',
+                        textShadow: '0px 0px 10px #FF4500',
                     },
                 }}
             >

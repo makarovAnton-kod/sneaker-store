@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { Typography } from "@mui/material";
+import { Typography, Box, Paper } from "@mui/material";
 import ProductForm from "../../components/ProductForm/ProductForm";
 import { createProduct } from "../../store/actions/productsActions";
 import { fetchCategories } from "../../store/actions/categoriesActions";
@@ -21,31 +21,50 @@ const NewProduct = () => {
     };
 
     return (
-        <>
-            <Typography
-                textAlign="center"
-                marginBottom="20px"
-                variant="h4"
-                sx={{
-                    color: '#FFD700', // Золотой цвет для заголовка
-                    fontFamily: 'Arial, sans-serif', // Шрифт, подходящий для игр
-                    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', // Тень для эффекта
-                }}
-            >
-                Новый продукт
-            </Typography>
-            <ProductForm
-                categories={categories}
-                error={error}
-                onSubmit={onProductFormSubmit}
-                sx={{
-                    backgroundColor: '#333', // Темный фон для формы
-                    borderRadius: '8px', // Скругленные углы
-                    padding: '20px', // Внутренние отступы
-                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)', // Тень для формы
-                }}
-            />
-        </>
+        <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '100vh',
+            backgroundColor: '#1e1e1e',
+            padding: '40px',
+        }}>
+            <Paper sx={{
+                padding: '30px',
+                backgroundColor: '#2c2c2c',
+                borderRadius: '15px',
+                boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)',
+                width: '100%',
+                maxWidth: '600px',
+            }}>
+                <Typography
+                    textAlign="center"
+                    marginBottom="30px"
+                    variant="h4"
+                    sx={{
+                        color: '#FF6347', // Яркий цвет для заголовка
+                        fontFamily: 'Roboto, sans-serif', // Современный шрифт
+                        fontWeight: 'bold',
+                        textShadow: '3px 3px 8px rgba(0, 0, 0, 0.7)', // Усиленная тень для эффекта
+                        textTransform: 'uppercase', // Заглавные буквы
+                    }}
+                >
+                    Создание нового продукта
+                </Typography>
+                <ProductForm
+                    categories={categories}
+                    error={error}
+                    onSubmit={onProductFormSubmit}
+                    sx={{
+                        backgroundColor: '#3c3c3c', // Более темный фон для формы
+                        borderRadius: '10px', // Более округлые углы
+                        padding: '25px', // Увеличенные внутренние отступы
+                        boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.4)', // Усиленная тень для формы
+                        color: '#FFFFFF',
+                    }}
+                />
+            </Paper>
+        </Box>
     );
 };
 

@@ -30,12 +30,12 @@ const UserMenu = ({ user }) => {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
                 sx={{
-                    color: '#FFD700', // Золотой цвет текста
-                    textShadow: '0px 0px 8px #FF4500', // Свечение текста
-                    fontWeight: 'bold', // Жирный текст
+                    color: '#FFD700',
+                    textShadow: '0px 0px 8px #FF4500',
+                    fontWeight: 'bold',
                     '&:hover': {
-                        color: '#FF4500', // Оранжево-красный цвет при наведении
-                        textShadow: '0px 0px 10px #FF4500', // Усиленное свечение при наведении
+                        color: '#FF4500',
+                        textShadow: '0px 0px 10px #FF4500',
                     },
                 }}
             >
@@ -44,7 +44,7 @@ const UserMenu = ({ user }) => {
                     <Avatar
                         alt={user.displayName}
                         src={user.avatar}
-                        sx={{ width: 24, height: 24, marginRight: "5px", border: '2px solid #FFD700' }} // Золотая окантовка аватара
+                        sx={{ width: 24, height: 24, marginRight: "5px", border: '2px solid #FFD700' }}
                     />
                 }
                 Привет, {user.displayName}!
@@ -63,6 +63,12 @@ const UserMenu = ({ user }) => {
                         handleClose();
                         dispatch(historyReplace('/profile'));
                     }}
+                    sx={{
+                        '&:hover': {
+                            backgroundColor: '#FF8C00',
+                            color: '#FFFFFF',
+                        },
+                    }}
                 >
                     Профиль
                 </MenuItem>
@@ -70,6 +76,12 @@ const UserMenu = ({ user }) => {
                     onClick={() => {
                         handleClose();
                         dispatch(logoutUser());
+                    }}
+                    sx={{
+                        '&:hover': {
+                            backgroundColor: '#FF8C00',
+                            color: '#FFFFFF',
+                        },
                     }}
                 >
                     Выйти

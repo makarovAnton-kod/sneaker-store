@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {deleteOrder, fetchUserOrders, fetchOrders} from "../../store/actions/ordersActions";
-import {updateUser} from "../../store/actions/usersActions";
-import {Container} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { deleteOrder, fetchUserOrders, fetchOrders } from "../../store/actions/ordersActions";
+import { updateUser } from "../../store/actions/usersActions";
+import { Container, Typography, Box, Paper } from '@mui/material';
 import OrdersTable from './../Order/OrdersTable'; // Компонент для отображения заказов
 import EditOrderDialog from './../Order/EditOrder/EditOrderDialog';
 import UserProfile from "./UserProfile";
@@ -37,7 +37,9 @@ const Profile = () => {
     };
 
     const handleDeleteOrder = (orderId) => {
-        dispatch(deleteOrder(orderId));
+        if (window.confirm('Вы уверены, что хотите удалить этот заказ?')) {
+            dispatch(deleteOrder(orderId));
+        }
     };
 
     const handleChange = e => {
@@ -51,31 +53,65 @@ const Profile = () => {
     };
 
     return (
-        <Container maxWidth="lg">
-            <UserProfile
-                userData={userData}
-                editMode={editMode}
-                handleChange={handleChange}
-                handleSave={handleSave}
-                setEditMode={setEditMode}
-            />
+        <Container maxWidth="lg" sx={{ paddingTop: '30px' }}>
+            <Paper sx={{
+                padding: '20px',
+                backgroundColor: '#2c2c2c',
+                borderRadius: '15px',
+                boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)',
+                marginBottom: '40px',
+            }}>
+                <Typography variant="h4" sx={{
+                    color: '#FF6347',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    marginBottom: '20px',
+                    textAlign: 'center',
+                    textShadow: '3px 3px 8px rgba(0, 0, 0, 0.7)',
+                }}>
+                    Профиль пользователя
+                </Typography>
+
+                <UserProfile
+                    userData={userData}
+                    editMode={editMode}
+                    handleChange={handleChange}
+                    handleSave={handleSave}
+                    setEditMode={setEditMode}
+                />
+            </Paper>
 
             {user && user.role === 'admin' && (
-                <OrdersTable
-                    title="Все заказы пользователей"
-                    orders={orders}
-                    onEditOrder={handleEditOrder}
-                    onDeleteOrder={handleDeleteOrder}
-                    isAdmin={true}
-                />
+                <Box sx={{
+                    marginBottom: '40px',
+                    padding: '20px',
+                    backgroundColor: '#2c2c2c',
+                    borderRadius: '15px',
+                    boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)',
+                }}>
+                    <OrdersTable
+                        title="Все заказы пользователей"
+                        orders={orders}
+                        onEditOrder={handleEditOrder}
+                        onDeleteOrder={handleDeleteOrder}
+                        isAdmin={true}
+                    />
+                </Box>
             )}
 
-            <OrdersTable
-                title="Мои заказы"
-                orders={userOrders}
-                onEditOrder={handleEditOrder}
-                onDeleteOrder={handleDeleteOrder}
-            />
+            <Box sx={{
+                padding: '20px',
+                backgroundColor: '#2c2c2c',
+                borderRadius: '15px',
+                boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)',
+            }}>
+                <OrdersTable
+                    title="Мои заказы"
+                    orders={userOrders}
+                    onEditOrder={handleEditOrder}
+                    onDeleteOrder={handleDeleteOrder}
+                />
+            </Box>
 
             {editOrder && (
                 <EditOrderDialog

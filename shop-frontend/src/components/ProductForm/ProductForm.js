@@ -3,7 +3,7 @@ import { Button, Grid, Typography } from "@mui/material";
 import FileInput from "../UI/Form/FileInput/FileInput";
 import FormElement from "../UI/Form/FormElement/FormElement";
 import FormSelect from "../UI/Form/FormSelect/FormSelect";
-import {apiUrl} from "../../config";
+import { apiUrl } from "../../config";
 
 const ProductForm = ({ onSubmit, categories, error, initialData }) => {
     const [state, setState] = useState({
@@ -20,7 +20,7 @@ const ProductForm = ({ onSubmit, categories, error, initialData }) => {
         if (initialData) {
             setState(initialData);
             if (initialData.image) {
-                if(initialData.image.includes('fixtures')){
+                if (initialData.image.includes('fixtures')) {
                     setPreview(`${apiUrl}/${initialData.image}`);
                 }
                 setPreview(`${apiUrl}/images/${initialData.image}`);
@@ -44,7 +44,6 @@ const ProductForm = ({ onSubmit, categories, error, initialData }) => {
         const file = e.target.files[0];
         setState(prevState => ({ ...prevState, image: file }));
 
-        // Предпросмотр выбранного файла
         const reader = new FileReader();
         reader.onloadend = () => {
             setPreview(reader.result);
@@ -74,10 +73,10 @@ const ProductForm = ({ onSubmit, categories, error, initialData }) => {
                 direction="column"
                 rowSpacing={2}
                 sx={{
-                    backgroundColor: '#f0f0f0', // Светлый фон для лучшей читаемости
-                    borderRadius: '10px', // Скругленные углы
-                    padding: '20px', // Внутренние отступы
-                    boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.1)', // Легкая тень
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: '20px',
+                    padding: '30px',
+                    boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.1)',
                 }}
             >
                 <FormSelect
@@ -88,12 +87,12 @@ const ProductForm = ({ onSubmit, categories, error, initialData }) => {
                     options={categories}
                     error={getFieldError('category')}
                     sx={{
-                        color: '#000000', // Черный цвет текста для контраста
+                        color: '#333333',
                         '& .MuiInputBase-input': {
-                            color: '#000000', // Черный цвет текста внутри input
+                            color: '#333333',
                         },
                         '& .MuiFormLabel-root': {
-                            color: '#333333', // Темно-серый цвет для лейблов
+                            color: '#555555',
                         }
                     }}
                 />
@@ -104,12 +103,12 @@ const ProductForm = ({ onSubmit, categories, error, initialData }) => {
                     name="title"
                     error={getFieldError('title')}
                     sx={{
-                        color: '#000000', // Черный цвет текста
+                        color: '#333333',
                         '& .MuiInputBase-input': {
-                            color: '#000000', // Черный цвет текста внутри input
+                            color: '#333333',
                         },
                         '& .MuiFormLabel-root': {
-                            color: '#333333', // Темно-серый цвет для лейблов
+                            color: '#555555',
                         }
                     }}
                 />
@@ -121,12 +120,12 @@ const ProductForm = ({ onSubmit, categories, error, initialData }) => {
                     name="price"
                     error={getFieldError('price')}
                     sx={{
-                        color: '#000000', // Черный цвет текста
+                        color: '#333333',
                         '& .MuiInputBase-input': {
-                            color: '#000000', // Черный цвет текста внутри input
+                            color: '#333333',
                         },
                         '& .MuiFormLabel-root': {
-                            color: '#333333', // Темно-серый цвет для лейблов
+                            color: '#555555',
                         }
                     }}
                 />
@@ -137,12 +136,12 @@ const ProductForm = ({ onSubmit, categories, error, initialData }) => {
                     name="description"
                     error={getFieldError('description')}
                     sx={{
-                        color: '#000000', // Черный цвет текста
+                        color: '#333333',
                         '& .MuiInputBase-input': {
-                            color: '#000000', // Черный цвет текста внутри input
+                            color: '#333333',
                         },
                         '& .MuiFormLabel-root': {
-                            color: '#333333', // Темно-серый цвет для лейблов
+                            color: '#555555',
                         }
                     }}
                 />
@@ -152,19 +151,19 @@ const ProductForm = ({ onSubmit, categories, error, initialData }) => {
                         name="image"
                         onChange={fileChangeHandler}
                         sx={{
-                            color: '#000000', // Черный цвет текста
+                            color: '#333333',
                             '& .MuiInputBase-input': {
-                                color: '#000000', // Черный цвет текста внутри input
+                                color: '#333333',
                             },
                             '& .MuiFormLabel-root': {
-                                color: '#333333', // Темно-серый цвет для лейблов
+                                color: '#555555',
                             }
                         }}
                     />
                     {preview && (
                         <Grid item mt={2}>
-                            <Typography>Предпросмотр изображения:</Typography>
-                            <img src={preview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '300px', marginTop: '10px' }} />
+                            <Typography sx={{ color: '#555555' }}>Предпросмотр изображения:</Typography>
+                            <img src={preview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '300px', marginTop: '10px', borderRadius: '10px' }} />
                         </Grid>
                     )}
                 </Grid>
@@ -174,16 +173,18 @@ const ProductForm = ({ onSubmit, categories, error, initialData }) => {
                         color="primary"
                         variant="contained"
                         sx={{
-                            textTransform: 'uppercase', // Верхний регистр текста
-                            backgroundColor: '#1e90ff', // Ярко-синий цвет кнопки
+                            textTransform: 'uppercase',
+                            backgroundColor: '#FF6347',
                             '&:hover': {
-                                backgroundColor: '#1c86ee', // Цвет кнопки при наведении
+                                backgroundColor: '#FF4500',
                             },
-                            padding: '10px 20px', // Внутренние отступы кнопки
-                            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)', // Тень для кнопки
+                            padding: '12px 28px',
+                            borderRadius: '30px',
+                            fontWeight: 'bold',
+                            boxShadow: '0px 8px 20px rgba(255, 99, 71, 0.4)',
                         }}
                     >
-                        Сохранить изменения
+                        Сохранить
                     </Button>
                 </Grid>
             </Grid>

@@ -16,11 +16,11 @@ const Products = () => {
     }, [dispatch]);
 
     return (
-        <Grid container direction="column" spacing={2}>
+        <Grid container direction="column" spacing={4} sx={{paddingTop: '35px'}}>
             <Grid item container justifyContent="space-between" alignItems="center">
                 <Grid item>
                     <Typography variant="h5" sx={{ color: '#FFD700', fontWeight: 'bold' }}>
-                        Игры
+                        Кроссовки
                     </Typography>
                 </Grid>
                 {user && user.role === 'admin' && (
@@ -38,7 +38,7 @@ const Products = () => {
                                 marginRight: '10px',
                             }}
                         >
-                            Добавить игру
+                            Добавить товар
                         </Button>
                         <Button
                             color="secondary"
